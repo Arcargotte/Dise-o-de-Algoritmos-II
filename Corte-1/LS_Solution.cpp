@@ -55,41 +55,73 @@ vector<int> standard_greedy_algorithm (vector<double> weight, vector<double> val
     return knapsack_distribution;
 }
 
-void local_search (vector<double> weight, vector<double> value, double max_weight){
-    vector<int> x = standard_greedy_algorithm(weight, value, max_weight);
+vector<int> local_search (vector<double> weight, vector<double> value, double max_weight){
+    // vector<int> x = standard_greedy_algorithm(weight, value, max_weight);
+    vector<int> x = {1, 0, 1, 0, 1};
     int N = x.size();
     //Generate neighborhood of initial solution x
 
     auto neighborhood = [N](vector<int> x){
         vector<int> vx;
+        vector<int> arr_ones;
+        vector<int> arr_zeros;
         vector<vector<int>> neighbors = {};
         for (int i = 0; i < N; i++){
             vx = x;
-            if (x[i] == 1){
-                vx[i] = 0;
-            } else {
-                vx[i] = 1;
-            }
+            (vx[i] == 1) ? arr_ones.push_back(i) : arr_zeros.push_back(i);
 
-            for (int i = 0; i < N; i++){
-                for (int j = 0; j < N; j++){
-
-                }
-            }
-
-
-
-            neighbors.push_back(vx);
         }
+        vector<int> banned_positions (vx.size(), 0);
+
+        for (int i = 0; i < arr_ones.size(); i++){
+            for (int j = 0; j < arr_zeros.size(); j++){
+                int pos_ones = arr_ones[i];
+                int pos_zeros = arr_zeros[j];
+
+                for (int ones = 0; ones < arr_ones.size() && i != 0 && ones <= i; ones++){
+                    banned_positions[arr_ones[ones]] = 1;
+                }
+
+                for (int zeros = 0; zeros < arr_zeros.size() && j != 0 && zeros <= j; zeros++){
+                    banned_positions[arr_zeros[zeros]] = 1;
+                }
+                vx[pos_ones] = 0;
+                vx[pos_zeros] = 1;
+
+                for (int k = 0; k < vx.size(); k++){
+                    if (banned_positions[k] == 0) {
+                        int temp = vx[k];
+                        if (vx[k] == 1) {
+                            vx[k] = 0;
+                        } else {
+                            vx[k] = 1;
+                        }
+                        neighbors.push_back(vx);
+                        vx[k] = temp;
+                    }
+                    
+                }
+
+                //Reset variable section
+                for (int ones = 0; ones < arr_ones.size() && i != 0 && ones <= i; ones++){
+                    banned_positions[arr_ones[ones]] = 0;
+                }
+
+                for (int zeros = 0; zeros < arr_zeros.size() && j != 0 && zeros <= j; zeros++){
+                    banned_positions[arr_zeros[zeros]] = 0;
+                }
+                vx[pos_ones] = 1;
+                vx[pos_zeros] = 0;
+                //end
+            }
+        }
+
         return neighbors;
     };
+    // vector<vector<int>> neighbors = neighborhood(x);
 
-    // for (int i = 0; i < N; i++){
-    //     for (int j = 0; j < N; j++){
-    //         cout << neighborhood[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
+
+    // cout << "Tamaño de vecindad " << neighbors.size() << endl;
 
     // end
 
@@ -112,19 +144,40 @@ void local_search (vector<double> weight, vector<double> value, double max_weigh
     };
     // end
 
-    int best_sol_found = false;
     vector <vector <int>> neighbors = {};
-    while (!best_sol_found) {
+    bool best_found = false;
+    double optimal =  f(x);
+    double prev_optimal = 0;
+    while (!best_found) {
+        optimal =  f(x);
+        prev_optimal = optimal;
         neighbors = neighborhood(x);
-        for (int i = 0; i < N; i++){
-            if (f(neighbors[i]) > f(x)){
+
+        // cout << "El BARRIO: " << endl;
+        // for (int i = 0; i < neighbors.size(); i++){
+            
+        //     for (int j = 0; j < N; j++){
+                
+        //         cout << neighbors[i][j] << " ";
+        //     }
+        //     cout << endl;
+        // }
+
+        for (int i = 0; i < neighbors.size(); i++){
+            if (f(neighbors[i]) > optimal){
                 x = neighbors[i];
-            } else {
-                best_sol_found = true;
-                break;
+                optimal = f(x);
+                cout << "Optimal: " << optimal << endl;
             }
         }
+
+        if (prev_optimal >= optimal) {
+            best_found = true;
+        }
+
     }
+
+    return x;
 
 }
 
@@ -132,16 +185,26 @@ int main () {
     int MAX_WEIGHT = 11;
     vector<double> weight = {1, 2, 5, 6, 7};
     vector<double> value = {1, 6, 18, 22, 28};
-    vector<int> knapsack_distribution = standard_greedy_algorithm(weight, value, MAX_WEIGHT);
-    int N = knapsack_distribution.size();
+    int N = weight.size();
 
-    local_search(weight, value, MAX_WEIGHT);
+    vector<int> knapsack_distribution = local_search(weight, value, MAX_WEIGHT);
 
+    double total_value = 0;
 
-    // for (int i = 0; i < N; i++){
-    //     cout << knapsack_distribution[i] << " ";
-    // }
+    for (int i = 0; i < N; i++){
+        if (knapsack_distribution[i] == 1) {
+            total_value += value[i];
+        }
+    }
+    
+    cout << total_value << endl;
+    for (int i = 0; i < N; i++){
+        if (knapsack_distribution[i] == 1) {
+            cout << value[i] << " " << weight[i] << endl;
+        }
+    }
 
     cout << endl;
+
     return 0;
 }
