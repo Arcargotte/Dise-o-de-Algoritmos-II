@@ -8,23 +8,28 @@
 
 
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
-int * ExactSolution(int n, int k){
-
-    // 0 es el profit | 1 es el peso
-    int elements[2][n] = {{1,6,18,22,28},{1,2,5,6,7}};
-    int knapsack[n][k];
-
-    // inicializamos la matriz en todo 0
-    for (int i = 0; i < n; i++)
+void Print2DMtx(vector<vector<int>> m, int f, int c){
+    for (int i = 0; i < f; i++)
     {
-        for (int j = 0; j < k; j++)
+        for (int j = 0; j < c; j++)
         {
-            knapsack[i][j] = 0;
+            cout << m[i][j] << '\t';
         }
+        cout << "\n";
     }
+    cout << "\n";
+}
+
+vector<int> ExactSolution(int n, int k, vector<int> profit, vector<int> weight){
+
+    // 0 es el peso | 1 es el profit
+    vector<vector<int>> elements = {weight, profit};
+    vector<vector<int>> knapsack (n, vector<int>(k,0));
+
 
     // aplicamos el algoritmo exacto
     for (int i = 0; i < n; i++)
@@ -62,22 +67,40 @@ int * ExactSolution(int n, int k){
         }
     }
 
-    // PrintMtx(knapsack);
-    for (int i = 0; i < n; i++)
-    {
-        
-        for (int j = 0; j < k; j++)
-        {
-            cout << knapsack[i][j] << " ";
-        }
-        cout << "\n";
-        
-    }   
+    int l = n-1;
+    int o = k-1;
+    vector<int> sol (n, 0); 
 
-    return *knapsack;
+    while (l != 0)
+    {
+        int v = elements[0][l];
+        int w = elements[1][l];
+
+        if(knapsack[l][o] != knapsack[l-1][o]){
+            o = o - w;
+            sol[l]= 1;
+            l--;
+        }
+        else{
+            l--;
+        }
+    }
+    return sol;
 }
 
 int main(){
-    int* pun = ExactSolution(5, 12);
+    int n = 5;
+    int k = 12;
+    vector<int> p = {1,2,5,6,7};
+    vector<int> w = {1, 6, 18, 22, 28};
+
+    
+    vector<int> result = ExactSolution(n, k, p, w);
+    for (int i = 0; i < result.size(); i++)
+    {
+        cout << result[i] << " ";
+    }
+    cout << "\n";
+
     return 0;
 }
