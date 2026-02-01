@@ -138,12 +138,6 @@ vector<int> iterative_local_search (vector<double> &weight, vector<double> &valu
 
     // end
 
-    // for (int i = 0; i < N; i++){
-    //     cout << "(" << density_arr[i].density << ", " << density_arr[i].item << ")"<< " ";
-    // }
-
-    // cout << endl;
-
     // Perturb function
     auto perturba_inador = [weight, value, max_weight, N](vector<int> x){
         int k = N / 4;
@@ -208,36 +202,7 @@ vector<int> iterative_local_search (vector<double> &weight, vector<double> &valu
 
         return x_prima;
     };
-        //end
-        //end
-
-        // cout << "in_items_density:\n";
-        // for (int i = 0; i < ones_size; i++){
-            
-        //     cout << "(" << in_items_density[i].density << ", " << in_items_density[i].item << ")"<< " ";
-        // }
-
-        // cout << endl;
-        // cout << "out_items_density:\n";
-        // for (int i = 0; i < zeros_size; i++){
-            
-        //     cout << "(" << out_items_density[i].density << ", " << out_items_density[i].item << ")"<< " ";
-        // }
-
-        // cout << endl;
-
-        // cout << "Solucion inicial: \n";
-        // for (int i = 0; i < N; i++){
-        //     cout << x[i] << " ";
-        // }
-        // cout << endl;
-
-        // cout << "Solucion perturbada: \n";
-        // for (int i = 0; i < N; i++){
-        //     cout << x_prima[i] << " ";
-        // }
-
-        // cout << endl;
+    
 
     // Criterio de aceptacion === Eval. function
     auto f = [value, weight, max_weight, N](vector<int> &solution)
@@ -281,24 +246,6 @@ vector<int> iterative_local_search (vector<double> &weight, vector<double> &valu
 
 int main () {
 
-    // vector<int> knapsack_distribution = local_search(weight, value, MAX_WEIGHT);
-
-    // double total_value = 0;
-
-    // for (int i = 0; i < N; i++){
-    //     if (knapsack_distribution[i] == 1) {
-    //         total_value += value[i];
-    //     }
-    // }
-    
-    // cout << total_value << endl;
-    // for (int i = 0; i < N; i++){
-    //     if (knapsack_distribution[i] == 1) {
-    //         cout << value[i] << " " << weight[i] << endl;
-    //     }
-    // }
-
-    // cout << endl;
     parser();
 
     vector<int> knapsack_distribution = iterative_local_search(weight, value, max_weight);
