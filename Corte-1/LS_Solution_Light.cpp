@@ -34,53 +34,33 @@ vector<int> local_search (vector<double> &weight, vector<double> &value, double 
             (vx[i] == 1) ? arr_ones.push_back(i) : arr_zeros.push_back(i);
 
         }
-        vector<int> banned_positions (vx.size(), 0);
+        
 
         for (int i = 0; i < arr_ones.size(); i++){
             for (int j = 0; j < arr_zeros.size(); j++){
                 int pos_ones = arr_ones[i];
                 int pos_zeros = arr_zeros[j];
 
-                for (int ones = 0; ones < arr_ones.size() && i != 0 && ones <= i; ones++){
-                    banned_positions[arr_ones[ones]] = 1;
-                }
-
-                for (int zeros = 0; zeros < arr_zeros.size() && j != 0 && zeros <= j; zeros++){
-                    banned_positions[arr_zeros[zeros]] = 1;
-                }
                 vx[pos_ones] = 0;
                 vx[pos_zeros] = 1;
 
                 neighbors.push_back(vx);
 
-                for (int k = 0; k < vx.size(); k++){
-                    if (banned_positions[k] == 0) {
-                        int temp = vx[k];
-                        if (vx[k] == 1) {
-                            vx[k] = 0;
-                        } else {
-                            vx[k] = 1;
-                        }
-                        neighbors.push_back(vx);
-                        vx[k] = temp;
-                    }
-                    
-                }
-
-                //Reset variable section
-                for (int ones = 0; ones < arr_ones.size() && i != 0 && ones <= i; ones++){
-                    banned_positions[arr_ones[ones]] = 0;
-                }
-
-                for (int zeros = 0; zeros < arr_zeros.size() && j != 0 && zeros <= j; zeros++){
-                    banned_positions[arr_zeros[zeros]] = 0;
-                }
                 vx[pos_ones] = 1;
                 vx[pos_zeros] = 0;
                 //end
             }
         }
-
+        for (int k = 0; k < vx.size(); k++){
+            int temp = vx[k];
+            if (vx[k] == 1) {
+                vx[k] = 0;
+            } else {
+                vx[k] = 1;
+            }
+            neighbors.push_back(vx);
+            vx[k] = temp;
+        }
         return neighbors;
     };
 
@@ -137,7 +117,6 @@ vector<int> local_search (vector<double> &weight, vector<double> &value, double 
         }
 
     }
-
     return x;
 
 }

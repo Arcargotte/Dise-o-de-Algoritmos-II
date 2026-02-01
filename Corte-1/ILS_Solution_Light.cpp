@@ -10,7 +10,7 @@ struct pair_density_item {
     double item;
 };
 
-vector<int> local_search (vector<int> &x, vector<double> &weight, vector<double> &value, double &max_weight){
+vector<int> local_search_light (vector<int> &x, vector<double> &weight, vector<double> &value, double &max_weight){
     int N = x.size();
     //Generate neighborhood of initial solution x
 
@@ -24,53 +24,32 @@ vector<int> local_search (vector<int> &x, vector<double> &weight, vector<double>
             (vx[i] == 1) ? arr_ones.push_back(i) : arr_zeros.push_back(i);
 
         }
-        vector<int> banned_positions (vx.size(), 0);
 
         for (int i = 0; i < arr_ones.size(); i++){
             for (int j = 0; j < arr_zeros.size(); j++){
                 int pos_ones = arr_ones[i];
                 int pos_zeros = arr_zeros[j];
 
-                for (int ones = 0; ones < arr_ones.size() && i != 0 && ones <= i; ones++){
-                    banned_positions[arr_ones[ones]] = 1;
-                }
-
-                for (int zeros = 0; zeros < arr_zeros.size() && j != 0 && zeros <= j; zeros++){
-                    banned_positions[arr_zeros[zeros]] = 1;
-                }
                 vx[pos_ones] = 0;
                 vx[pos_zeros] = 1;
 
                 neighbors.push_back(vx);
 
-                for (int k = 0; k < vx.size(); k++){
-                    if (banned_positions[k] == 0) {
-                        int temp = vx[k];
-                        if (vx[k] == 1) {
-                            vx[k] = 0;
-                        } else {
-                            vx[k] = 1;
-                        }
-                        neighbors.push_back(vx);
-                        vx[k] = temp;
-                    }
-                    
-                }
-
-                //Reset variable section
-                for (int ones = 0; ones < arr_ones.size() && i != 0 && ones <= i; ones++){
-                    banned_positions[arr_ones[ones]] = 0;
-                }
-
-                for (int zeros = 0; zeros < arr_zeros.size() && j != 0 && zeros <= j; zeros++){
-                    banned_positions[arr_zeros[zeros]] = 0;
-                }
                 vx[pos_ones] = 1;
                 vx[pos_zeros] = 0;
                 //end
             }
         }
-
+        for (int k = 0; k < vx.size(); k++){
+            int temp = vx[k];
+            if (vx[k] == 1) {
+                vx[k] = 0;
+            } else {
+                vx[k] = 1;
+            }
+            neighbors.push_back(vx);
+            vx[k] = temp; 
+        }
         return neighbors;
     };
 
@@ -123,18 +102,15 @@ vector<int> local_search (vector<int> &x, vector<double> &weight, vector<double>
         if (prev_optimal >= optimal) {
             best_found = true;
         }
-
     }
-
     return x;
-
 }
 
 vector<int> iterative_local_search (vector<double> &weight, vector<double> &value, double &max_weight){
     // Create first solution
     vector<int> x = standard_greedy_algorithm(weight, value, max_weight);
     int N = x.size();
-    vector<int> x_star = local_search(x, weight, value, max_weight);
+    vector<int> x_star = local_search_light(x, weight, value, max_weight);
 
     // end
 
@@ -230,7 +206,7 @@ vector<int> iterative_local_search (vector<double> &weight, vector<double> &valu
     while (best_found) {
         // cout << "It-s PERTURBING TIME" << endl;
         auto x_prima = perturba_inador(x_star);
-        auto x_prima_star = local_search(x_prima, weight, value, max_weight);
+        auto x_prima_star = local_search_light(x_prima, weight, value, max_weight);
 
         prev_optimal = optimal;
         optimal =  f(x_prima_star);
