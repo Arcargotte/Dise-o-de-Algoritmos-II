@@ -37,7 +37,7 @@ vector<double> ExactSolution(double n, double k, vector<double> profit, vector<d
     {
         double v = elements[1][i];
         double w = elements[0][i];
-
+        
         for (double j = 0; j <= k; j++)
         {
             double jj = j - w;
