@@ -33,15 +33,15 @@ vector<double> ExactSolution(double n, double k, vector<double> profit, vector<d
 
 
     // aplicamos el algoritmo exacto
-    for (double i = 0; i < n; i++)
+    for (size_t i = 0; i < n; i++)
     {
         double v = elements[1][i];
         double w = elements[0][i];
 
-        for (double j = 0; j <= k; j++)
+        for (size_t j = 0; j <= k; j++)
         {
-            double jj = j - w;
-            double ii = i - 1;
+            size_t jj = j - w;
+            size_t ii = i - 1;
             
             if (i == 0){
                 if (w <= j){
@@ -64,8 +64,8 @@ vector<double> ExactSolution(double n, double k, vector<double> profit, vector<d
 
     // Print2DMtx(knapsack, n, k);
 
-    double l = n-1;
-    double o = k;
+    long long l = n-1;
+    long long o = k;
     vector<double> sol (n, 0); 
 
     while (l >= 0)
@@ -101,14 +101,14 @@ int main(){
 
     double total_value = 0;
 
-    for (double i = 0; i < N; i++){
+    for (size_t i = 0; i < N; i++){
         if (result[i] == 1) {
             total_value += value[i];
         }
     }
     
     cout << total_value << endl;
-    for (double i = 0; i < N; i++){
+    for (size_t i = 0; i < N; i++){
         if (result[i] == 1) {
             cout << value[i] << " " << weight[i] << endl;
         }
