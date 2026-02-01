@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include "conmons.h"
 
 using namespace std;
 
@@ -9,60 +10,7 @@ struct pair_density_item {
     double item;
 };
 
-
-vector<int> standard_greedy_algorithm (vector<double> weight, vector<double> value, double max_weight)
-{    
-    long N = weight.size();
-    double ratio [N];
-    int items [N];
-    double knapsack_total_weight = 0;
-    vector<int> knapsack_distribution (N,0);
-    
-    for(int i = 0; i < N; i++){
-        ratio[i] = value[i] / weight[i];
-        items[i] = i;
-    }
-
-    double temp;
-    int temp_int = 0;
-    // Existen tres arreglos separados: uno de pesos, otro de valores y otros de densidad; hacemos bubbleSort para ordenar los tres arreglos simultaneamente en función de su densidad
-    for (int i = 0; i < N; i++){
-        for (int j = i; j < weight.size(); j++){
-            if (ratio[i] < ratio[j]){
-                temp = ratio[i];
-                ratio[i] = ratio[j];
-                ratio[j] = temp;
-
-                temp = weight[i];
-                weight[i] = weight[j];
-                weight[j] = temp;
-
-                
-                temp = value[i];
-                value[i] = value[j];
-                value[j] = temp;
-
-                temp_int = items[i];
-                items[i] = items[j];
-                items[j] = temp_int;
-            }
-        }
-    }
-
-    double total_weight = 0;
-    double total_value = 0;
-
-    for (int i = 0; i < N; i++){
-        if (weight[i] + total_weight <= max_weight){
-            total_weight += weight[i];
-            total_value += value[i];
-            knapsack_distribution[items[i]] = 1;
-        }
-    }
-    return knapsack_distribution;
-}
-
-vector<int> local_search (vector<int> x, vector<double> weight, vector<double> value, double max_weight){
+vector<int> local_search (vector<int> &x, vector<double> &weight, vector<double> &value, double &max_weight){
     int N = x.size();
     //Generate neighborhood of initial solution x
 
@@ -125,12 +73,6 @@ vector<int> local_search (vector<int> x, vector<double> weight, vector<double> v
 
         return neighbors;
     };
-    // vector<vector<int>> neighbors = neighborhood(x);
-
-
-    // cout << "Tamaño de vecindad " << neighbors.size() << endl;
-
-    // end
 
     //Eval. function
     auto f = [value, weight, max_weight, N](vector<int> &solution)
@@ -188,7 +130,7 @@ vector<int> local_search (vector<int> x, vector<double> weight, vector<double> v
 
 }
 
-vector<int> iterative_local_search (vector<double> weight, vector<double> value, double max_weight){
+vector<int> iterative_local_search (vector<double> &weight, vector<double> &value, double &max_weight){
     // Create first solution
     vector<int> x = standard_greedy_algorithm(weight, value, max_weight);
     int N = x.size();
@@ -321,7 +263,7 @@ vector<int> iterative_local_search (vector<double> weight, vector<double> value,
     double prev_optimal = 0;
 
     while (best_found) {
-
+        cout << "It-s PERTURBING TIME" << endl;
         auto x_prima = perturba_inador(x_star);
         auto x_prima_star = local_search(x_prima, weight, value, max_weight);
 
@@ -338,10 +280,6 @@ vector<int> iterative_local_search (vector<double> weight, vector<double> value,
 }
 
 int main () {
-    int MAX_WEIGHT = 11;
-    vector<double> weight = {1, 2, 5, 6, 7};
-    vector<double> value = {1, 6, 18, 22, 28};
-    int N = weight.size();
 
     // vector<int> knapsack_distribution = local_search(weight, value, MAX_WEIGHT);
 
@@ -361,7 +299,9 @@ int main () {
     // }
 
     // cout << endl;
-    vector<int> knapsack_distribution = iterative_local_search(weight, value, MAX_WEIGHT);
+    parser();
+
+    vector<int> knapsack_distribution = iterative_local_search(weight, value, max_weight);
     double total_value = 0;
 
     for (int i = 0; i < N; i++){

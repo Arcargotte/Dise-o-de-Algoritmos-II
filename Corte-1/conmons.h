@@ -13,7 +13,7 @@ std::vector<double> value;
 int N;
 double max_weight;
 
-// Registro usado por Heuristics_Solution.cpp
+// Registro usado por Heuristics_Solution.cpp e ILS_Solution
 struct item {
     double density;
     int id;
