@@ -3,14 +3,15 @@
 
 #include <vector>
 #include <algorithm>
+#include <fstream>
 
 using namespace std;
 
 
-std::vector<double> weight = {1, 2, 5, 6, 7};
-std::vector<double> value = {1, 6, 18, 22, 28};
-int N = weight.size();
-double max_weight = 11;
+std::vector<double> weight;
+std::vector<double> value;
+int N;
+double max_weight;
 
 // Registro usado por Heuristics_Solution.cpp
 struct item {
@@ -57,6 +58,50 @@ vector<int> standard_greedy_algorithm (vector<double> &weight, vector<double> &v
     }
     
     return knapsack_distribution;
+}
+
+void parser() 
+{
+    int num_items;
+
+    ifstream inputFile("example.txt"); // Open the file named "example.txt"
+    string word;
+
+    if (!inputFile.is_open()) {
+        cerr << "Error: Could not open the file." << endl;
+    }
+    
+    if (inputFile >> word){
+        num_items = stoi(word);
+    }
+
+    int banned = 0;
+    int i= 0;
+    // cout << "Numero de objetos: "<< num_items << endl;
+    while (i < num_items * 3 && inputFile >> word) {
+        if (banned == 1){
+            value.push_back(stod(word));
+        } else if (banned == 2){
+            weight.push_back(stod(word));
+        }
+
+        banned = (banned + 1) % 3;
+
+        i++;
+    }
+    
+    if (inputFile >> word){
+        max_weight = stod(word);
+    }
+    
+    inputFile.close(); // Close the file stream
+
+    N = num_items;
+    
+    // for (int i = 0; i < num_items; i++){
+    //     cout << value[i] << " " << weight[i] << endl;
+    // }
+    // cout << "max_weight: " << max_weight << endl;
 }
 
 #endif

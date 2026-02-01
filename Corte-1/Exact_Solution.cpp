@@ -9,10 +9,11 @@
 
 #include <iostream>
 #include <vector>
+#include "conmons.h"
 
 using namespace std;
 
-void Print2DMtx(vector<vector<int>> m, int f, int c){
+void Print2DMtx(vector<vector<double>> m, int f, int c){
     for (int i = 0; i < f; i++)
     {
         for (int j = 0; j < c; j++)
@@ -24,11 +25,11 @@ void Print2DMtx(vector<vector<int>> m, int f, int c){
     cout << "\n";
 }
 
-vector<int> ExactSolution(int n, int k, vector<int> profit, vector<int> weight){
+vector<double> ExactSolution(int n, int k, vector<double> profit, vector<double> weight){
 
     // 0 es el peso | 1 es el profit
-    vector<vector<int>> elements = {weight, profit};
-    vector<vector<int>> knapsack (n, vector<int>(k,0));
+    vector<vector<double>> elements = {weight, profit};
+    vector<vector<double>> knapsack (n, vector<double>(k,0));
 
 
     // aplicamos el algoritmo exacto
@@ -41,19 +42,19 @@ vector<int> ExactSolution(int n, int k, vector<int> profit, vector<int> weight){
         {
             int jj = j - w;
             int ii = i - 1;
-            if (jj < 0){
-                jj = 0;
-            }
-            if (ii < 0){
-                ii = 0;
-            }
+            // if (jj < 0){
+            //     jj = 0;
+            // }
+            // if (ii < 0){
+            //     ii = 0;
+            // }
             
             if (i == 0){
                 if (w <= j){
-                    knapsack[i][j] = knapsack[i][j] + v;
+                    knapsack[i][j] = v;
                 }
             }
-            else if(j-w < 0){
+            else if(jj < 0){
                 knapsack[i][j] = knapsack[ii][j];
             }
             else{
@@ -67,16 +68,20 @@ vector<int> ExactSolution(int n, int k, vector<int> profit, vector<int> weight){
         }
     }
 
+    Print2DMtx(knapsack, n, k);
+
     int l = n-1;
     int o = k-1;
-    vector<int> sol (n, 0); 
+    vector<double> sol (n, 0); 
 
-    while (l != 0)
+    while (l > 0)
     {
-        int v = elements[0][l];
         int w = elements[1][l];
 
-        if(knapsack[l][o] != knapsack[l-1][o]){
+        if (l == 0 && knapsack[l][o] != 0) {
+            sol[l] = 1;
+            l--;
+        }else if(knapsack[l][o] != knapsack[l-1][o]){
             o = o - w;
             sol[l]= 1;
             l--;
@@ -85,22 +90,40 @@ vector<int> ExactSolution(int n, int k, vector<int> profit, vector<int> weight){
             l--;
         }
     }
+    
     return sol;
 }
 
 int main(){
-    int n = 5;
-    int k = 12;
-    vector<int> p = {1,2,5,6,7};
-    vector<int> w = {1, 6, 18, 22, 28};
+    // int n = 5;
+    // int k = 12;
+    // vector<int> p = {1,2,5,6,7};
+    // vector<int> w = {1, 6, 18, 22, 28};
+
+    parser();
 
     
-    vector<int> result = ExactSolution(n, k, p, w);
-    for (int i = 0; i < result.size(); i++)
-    {
-        cout << result[i] << " ";
+    vector<double> result = ExactSolution(N, max_weight, value, weight);
+    // for (int i = 0; i < result.size(); i++)
+    // {
+    //     cout << result[i] << " ";
+    // }
+    // cout << "\n";
+
+    double total_value = 0;
+
+    for (int i = 0; i < N; i++){
+        if (result[i] == 1) {
+            total_value += value[i];
+        }
     }
-    cout << "\n";
+    
+    cout << total_value << endl;
+    for (int i = 0; i < N; i++){
+        if (result[i] == 1) {
+            cout << value[i] << " " << weight[i] << endl;
+        }
+    }
 
     return 0;
 }

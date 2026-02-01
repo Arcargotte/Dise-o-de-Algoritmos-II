@@ -6,10 +6,6 @@
 
 using namespace std;
 
-// vector<double> weight;
-// vector<double> value;
-// double max_weight;
-
 void parser() 
 {
     int num_items;
