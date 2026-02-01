@@ -1,6 +1,8 @@
 
 
-
+generator: generator.cpp conmons.h
+	g++ -g -std=c++11 -O2 generator.cpp -o generatorExecutable && ./generatorExecutable
+	 
 knapsack: parser.o LS_Solution.o ILS_Solution.o Heuristics_Solution.o generator.o Exact_Solutions.o
 	g++ -o knapsack parser.o LS_Solution.o ILS_Solution.o Heuristics_Solution.o generator.o Exact_Solutions.o
 
