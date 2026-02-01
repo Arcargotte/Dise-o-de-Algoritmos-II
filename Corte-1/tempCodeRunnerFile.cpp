@@ -1,1 +1,0 @@
-zeros < arr_zeros.size() && 

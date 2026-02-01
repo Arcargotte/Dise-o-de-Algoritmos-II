@@ -88,6 +88,8 @@ vector<int> local_search (vector<double> weight, vector<double> value, double ma
                 vx[pos_ones] = 0;
                 vx[pos_zeros] = 1;
 
+                neighbors.push_back(vx);
+
                 for (int k = 0; k < vx.size(); k++){
                     if (banned_positions[k] == 0) {
                         int temp = vx[k];
@@ -149,11 +151,11 @@ vector<int> local_search (vector<double> weight, vector<double> value, double ma
     double optimal =  f(x);
     double prev_optimal = 0;
     while (!best_found) {
-        optimal =  f(x);
         prev_optimal = optimal;
+        optimal =  f(x);
         neighbors = neighborhood(x);
 
-        // cout << "El BARRIO: " << endl;
+        // cout << "El BARRIO: " << neighbors.size() << endl;
         // for (int i = 0; i < neighbors.size(); i++){
             
         //     for (int j = 0; j < N; j++){
