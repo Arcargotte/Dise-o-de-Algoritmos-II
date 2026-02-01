@@ -13,10 +13,10 @@
 
 using namespace std;
 
-void Print2DMtx(vector<vector<double>> m, int f, int c){
-    for (int i = 0; i < f; i++)
+void Print2DMtx(vector<vector<double>> m, double f, double c){
+    for (double i = 0; i < f; i++)
     {
-        for (int j = 0; j < c; j++)
+        for (double j = 0; j <= c; j++)
         {
             cout << m[i][j] << '\t';
         }
@@ -25,29 +25,23 @@ void Print2DMtx(vector<vector<double>> m, int f, int c){
     cout << "\n";
 }
 
-vector<double> ExactSolution(int n, int k, vector<double> profit, vector<double> weight){
+vector<double> ExactSolution(double n, double k, vector<double> profit, vector<double> weight){
 
     // 0 es el peso | 1 es el profit
     vector<vector<double>> elements = {weight, profit};
-    vector<vector<double>> knapsack (n, vector<double>(k,0));
+    vector<vector<double>> knapsack (n, vector<double>(k + 1,0));
 
 
     // aplicamos el algoritmo exacto
-    for (int i = 0; i < n; i++)
+    for (double i = 0; i < n; i++)
     {
-        int v = elements[0][i];
-        int w = elements[1][i];
+        double v = elements[1][i];
+        double w = elements[0][i];
 
-        for (int j = 0; j < k; j++)
+        for (double j = 0; j <= k; j++)
         {
-            int jj = j - w;
-            int ii = i - 1;
-            // if (jj < 0){
-            //     jj = 0;
-            // }
-            // if (ii < 0){
-            //     ii = 0;
-            // }
+            double jj = j - w;
+            double ii = i - 1;
             
             if (i == 0){
                 if (w <= j){
@@ -68,15 +62,15 @@ vector<double> ExactSolution(int n, int k, vector<double> profit, vector<double>
         }
     }
 
-    Print2DMtx(knapsack, n, k);
+    // Print2DMtx(knapsack, n, k);
 
-    int l = n-1;
-    int o = k-1;
+    double l = n-1;
+    double o = k;
     vector<double> sol (n, 0); 
 
-    while (l > 0)
+    while (l >= 0)
     {
-        int w = elements[1][l];
+        double w = elements[0][l];
 
         if (l == 0 && knapsack[l][o] != 0) {
             sol[l] = 1;
@@ -95,11 +89,6 @@ vector<double> ExactSolution(int n, int k, vector<double> profit, vector<double>
 }
 
 int main(){
-    // int n = 5;
-    // int k = 12;
-    // vector<int> p = {1,2,5,6,7};
-    // vector<int> w = {1, 6, 18, 22, 28};
-
     parser();
 
     
@@ -112,14 +101,14 @@ int main(){
 
     double total_value = 0;
 
-    for (int i = 0; i < N; i++){
+    for (double i = 0; i < N; i++){
         if (result[i] == 1) {
             total_value += value[i];
         }
     }
     
     cout << total_value << endl;
-    for (int i = 0; i < N; i++){
+    for (double i = 0; i < N; i++){
         if (result[i] == 1) {
             cout << value[i] << " " << weight[i] << endl;
         }

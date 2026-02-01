@@ -143,12 +143,13 @@ vector<int> local_search (vector<double> &weight, vector<double> &value, double 
 }
 
 int main () {
-    double MAX_WEIGHT = 11;
-    vector<double> weight = {1, 2, 5, 6, 7};
-    vector<double> value = {1, 6, 18, 22, 28};
-    int N = weight.size();
+    // double MAX_WEIGHT = 11;
+    // vector<double> weight = {1, 2, 5, 6, 7};
+    // vector<double> value = {1, 6, 18, 22, 28};
+    // int N = weight.size();
+    parser();
 
-    vector<int> knapsack_distribution = local_search(weight, value, MAX_WEIGHT);
+    vector<int> knapsack_distribution = local_search(weight, value, max_weight);
 
     double total_value = 0;
 
