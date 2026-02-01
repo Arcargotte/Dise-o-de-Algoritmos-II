@@ -2,12 +2,13 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <conmons.h>
 
 using namespace std;
 
-vector<double> weight;
-vector<double> value;
-double max_weight;
+// vector<double> weight;
+// vector<double> value;
+// double max_weight;
 
 void parser() 
 {
