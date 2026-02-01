@@ -1,66 +1,29 @@
 #include <iostream>
 #include <vector>
+#include "conmons.h"
 using namespace std;
 
-// Generate Initial Solution via Standard Greedy Algorithm
-vector<int> standard_greedy_algorithm (vector<double> weight, vector<double> value, double max_weight)
-{    
-    long N = weight.size();
-    double ratio [N];
-    int items [N];
-    double knapsack_total_weight = 0;
-    vector<int> knapsack_distribution (N,0);
-    
-    for(int i = 0; i < N; i++){
-        ratio[i] = value[i] / weight[i];
-        items[i] = i;
-    }
+/**
+ * Realiza búsqueda local clásica sobre una solución X.
+ * 
+ * A partir de una solución X al problema 1-0 Knapsack dado (que consigue a partir de un algoritmo voraz estándar), explora su vecindad Vx en búsqueda de un vecino estrictamente
+ * mejor según la función de evaluación f, donde f viene definida por la siguiente ecuación
+ * 
+ * f(x) = ∑ (vᵢ * xᵢ) si  ∑ (wᵢ * xᵢ) <= W; f(x) = -1 si ∑ (wᵢ * xᵢ) > W
+ * 
+ * Con xi siendo una función booleana que evalúa a 1 si el i-ésimo objeto forma parte de la solución x. Resumidamente, la f(x) retorna el valor acumulado de los ítems en la solución x si el peso
+ * no excede el límite W y retorna -1 en el caso contrario. 
+ * 
+ * @param weight Vector del peso de los ítems, donde weight[i] corresponde al peso del i-ésimo ítem del problema.
+ * @param value Vector del valor de los ítems, donde value[i] corresponde al valor del i-ésimo ítem del problema.
+ * @param max_weight Número real que define el peso máximo que puede cargar el Knapsack. 
+ */
+vector<int> local_search (vector<double> &weight, vector<double> &value, double &max_weight){
 
-    double temp;
-    int temp_int = 0;
-    // Existen tres arreglos separados: uno de pesos, otro de valores y otros de densidad; hacemos bubbleSort para ordenar los tres arreglos simultaneamente en función de su densidad
-    for (int i = 0; i < N; i++){
-        for (int j = i; j < weight.size(); j++){
-            if (ratio[i] < ratio[j]){
-                temp = ratio[i];
-                ratio[i] = ratio[j];
-                ratio[j] = temp;
-
-                temp = weight[i];
-                weight[i] = weight[j];
-                weight[j] = temp;
-
-                
-                temp = value[i];
-                value[i] = value[j];
-                value[j] = temp;
-
-                temp_int = items[i];
-                items[i] = items[j];
-                items[j] = temp_int;
-            }
-        }
-    }
-
-    double total_weight = 0;
-    double total_value = 0;
-
-    for (int i = 0; i < N; i++){
-        if (weight[i] + total_weight <= max_weight){
-            total_weight += weight[i];
-            total_value += value[i];
-            knapsack_distribution[items[i]] = 1;
-        }
-    }
-    return knapsack_distribution;
-}
-
-vector<int> local_search (vector<double> weight, vector<double> value, double max_weight){
-    // vector<int> x = standard_greedy_algorithm(weight, value, max_weight);
-    vector<int> x = {1, 0, 1, 0, 1};
+    vector<int> x = standard_greedy_algorithm(weight, value, max_weight);
     int N = x.size();
-    //Generate neighborhood of initial solution x
 
+    //Generate neighborhood of initial solution x
     auto neighborhood = [N](vector<int> x){
         vector<int> vx;
         vector<int> arr_ones;
@@ -184,7 +147,7 @@ vector<int> local_search (vector<double> weight, vector<double> value, double ma
 }
 
 int main () {
-    int MAX_WEIGHT = 11;
+    double MAX_WEIGHT = 11;
     vector<double> weight = {1, 2, 5, 6, 7};
     vector<double> value = {1, 6, 18, 22, 28};
     int N = weight.size();

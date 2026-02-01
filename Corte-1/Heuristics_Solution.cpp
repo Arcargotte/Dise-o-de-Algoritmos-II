@@ -1,71 +1,46 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include "conmons.h"
+
 using namespace std;
 
-// Generate Initial Solution via Standard Greedy Algorithm
-vector<int> standard_greedy_algorithm (vector<double> weight, vector<double> value, double max_weight)
+/**
+ * Genera determinísticamente una solución X al problema 0-1 Knapsack
+ * 
+ * Produce un arreglo de densidades vi / wi para el i-ésimo ítem del problema y los ordena de forma descendente e ir incluyendo en el "knapsack" aquellos ítems de mayor a menor densidad
+ * tales que cumplan con la condición wi + current_weight < max_weight; es decir, que el peso de los ítems en el knapsack no excedan el límite establecido por el problema.
+ * 
+ * @param weight Vector del peso de los ítems, donde weight[i] corresponde al peso del i-ésimo ítem del problema.
+ * @param value Vector del valor de los ítems, donde value[i] corresponde al valor del i-ésimo ítem del problema.
+ * @param max_weight Número real que define el peso máximo que puede cargar el Knapsack. 
+ */
+vector<int> standard_greedy_algorithm (vector<double> &weight, vector<double> &value, double &max_weight)
 {    
     long N = weight.size();
-    double ratio [N];
-    int items [N];
+    item density_arr [N];
     double knapsack_total_weight = 0;
     vector<int> knapsack_distribution (N,0);
     
     for(int i = 0; i < N; i++){
-        ratio[i] = value[i] / weight[i];
-        items[i] = i;
+        density_arr[i].density = value[i] / weight[i];
+        density_arr[i].id = i;
     }
 
-    double temp;
-    int temp_int = 0;
-    // Existen tres arreglos separados: uno de pesos, otro de valores y otros de densidad; hacemos bubbleSort para ordenar los tres arreglos simultaneamente en función de su densidad
-    for (int i = 0; i < N; i++){
-        for (int j = i; j < weight.size(); j++){
-            if (ratio[i] < ratio[j]){
-                temp = ratio[i];
-                ratio[i] = ratio[j];
-                ratio[j] = temp;
-
-                temp = weight[i];
-                weight[i] = weight[j];
-                weight[j] = temp;
-
-                
-                temp = value[i];
-                value[i] = value[j];
-                value[j] = temp;
-
-                temp_int = items[i];
-                items[i] = items[j];
-                items[j] = temp_int;
-            }
-        }
-    }
+    sort(density_arr, density_arr + N, [](const item &a, const item &b){
+        return a.density > b.density; 
+    });
 
     double total_weight = 0;
     double total_value = 0;
 
     for (int i = 0; i < N; i++){
-        if (weight[i] + total_weight <= max_weight){
-            total_weight += weight[i];
-            total_value += value[i];
-            knapsack_distribution[items[i]] = 1;
+        if (weight[density_arr[i].id] + total_weight <= max_weight){
+            total_weight += weight[density_arr[i].id];
+            total_value += value[density_arr[i].id];
+            knapsack_distribution[density_arr[i].id] = 1;
         }
     }
+    
     return knapsack_distribution;
-}
-
-int main () {
-    vector<double> weight = {1, 2, 5, 6, 7};
-    vector<double> value = {1, 6, 18, 22, 28};
-    int N = weight.size();
-
-    vector<int> knapsack_distribution = standard_greedy_algorithm(weight, value, 11);
-
-    for (int i = 0; i < N; i++){
-        cout << knapsack_distribution[i] << " ";
-    }
-
-    cout << endl;
-    return 0;
 }
