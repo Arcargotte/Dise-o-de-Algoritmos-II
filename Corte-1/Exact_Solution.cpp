@@ -25,7 +25,7 @@ void Print2DMtx(vector<vector<double>> m, double f, double c){
     cout << "\n";
 }
 
-vector<double> ExactSolution(double n, double k, vector<double> profit, vector<double> weight){
+vector<double> ExactSolution(long long n, long long k, vector<double> profit, vector<double> weight){
 
     // 0 es el peso | 1 es el profit
     vector<vector<double>> elements = {weight, profit};
@@ -33,15 +33,15 @@ vector<double> ExactSolution(double n, double k, vector<double> profit, vector<d
 
 
     // aplicamos el algoritmo exacto
-    for (double i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
         double v = elements[1][i];
         double w = elements[0][i];
-        
-        for (double j = 0; j <= k; j++)
+
+        for (int j = 0; j <= k; j++)
         {
-            double jj = j - w;
-            double ii = i - 1;
+            long long jj = j - w;
+            long long ii = i - 1;
             
             if (i == 0){
                 if (w <= j){
@@ -61,11 +61,11 @@ vector<double> ExactSolution(double n, double k, vector<double> profit, vector<d
             }  
         }
     }
-
+    
     // Print2DMtx(knapsack, n, k);
 
-    double l = n-1;
-    double o = k;
+    long long l = n-1;
+    long long o = k;
     vector<double> sol (n, 0); 
 
     while (l >= 0)
@@ -74,17 +74,14 @@ vector<double> ExactSolution(double n, double k, vector<double> profit, vector<d
 
         if (l == 0 && knapsack[l][o] != 0) {
             sol[l] = 1;
-            l--;
-        }else if(knapsack[l][o] != knapsack[l-1][o]){
+        }else if(l != 0 && knapsack[l][o] != knapsack[l-1][o]){
+
             o = o - w;
             sol[l]= 1;
-            l--;
         }
-        else{
-            l--;
-        }
+        l--;
     }
-    
+
     return sol;
 }
 
@@ -98,17 +95,17 @@ int main(){
     //     cout << result[i] << " ";
     // }
     // cout << "\n";
-
+    
     double total_value = 0;
 
-    for (double i = 0; i < N; i++){
+    for (int i = 0; i < N; i++){
         if (result[i] == 1) {
             total_value += value[i];
         }
     }
     
     cout << total_value << endl;
-    for (double i = 0; i < N; i++){
+    for (int i = 0; i < N; i++){
         if (result[i] == 1) {
             cout << value[i] << " " << weight[i] << endl;
         }
