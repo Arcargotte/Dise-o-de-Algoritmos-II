@@ -24,7 +24,8 @@ using namespace std;
  * @param x Solución a partir de la cual se hace búsqueda local.
  * @param weight Vector del peso de los ítems, donde weight[i] corresponde al peso del i-ésimo ítem del problema.
  * @param value Vector del valor de los ítems, donde value[i] corresponde al valor del i-ésimo ítem del problema.
- * @param max_weight Número real que define el peso máximo que puede cargar el Knapsack. 
+ * @param max_weight Número real que define el peso máximo que puede cargar el Knapsack.
+ * @return arreglo binario X[0..N] donde X[i] = 1 indica que el i-ésimo ítem está en el knapsack y X[i] = 0 que no.
  */
 vector<int> local_search_light (vector<int> &x, vector<double> &weight, vector<double> &value, double &max_weight){
     int N = x.size();
@@ -138,7 +139,8 @@ vector<int> local_search_light (vector<int> &x, vector<double> &weight, vector<d
  * 
  * @param weight Vector del peso de los ítems, donde weight[i] corresponde al peso del i-ésimo ítem del problema.
  * @param value Vector del valor de los ítems, donde value[i] corresponde al valor del i-ésimo ítem del problema.
- * @param max_weight Número real que define el peso máximo que puede cargar el Knapsack. 
+ * @param max_weight Número real que define el peso máximo que puede cargar el Knapsack.
+ * @return arreglo binario X[0..N] donde X[i] = 1 indica que el i-ésimo ítem está en el knapsack y X[i] = 0 que no.
  */
 vector<int> iterative_local_search (vector<double> &weight, vector<double> &value, double &max_weight){
     // Create first solution
