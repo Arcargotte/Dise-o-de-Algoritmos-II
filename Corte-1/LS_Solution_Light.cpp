@@ -98,16 +98,6 @@ vector<int> local_search (vector<double> &weight, vector<double> &value, double 
         optimal =  f(x);
         neighbors = neighborhood(x);
 
-        // cout << "El BARRIO: " << neighbors.size() << endl;
-        // for (int i = 0; i < neighbors.size(); i++){
-            
-        //     for (int j = 0; j < N; j++){
-                
-        //         cout << neighbors[i][j] << " ";
-        //     }
-        //     cout << endl;
-        // }
-
         for (int i = 0; i < neighbors.size(); i++){
             if (f(neighbors[i]) > optimal){
                 x = neighbors[i];
@@ -126,10 +116,7 @@ vector<int> local_search (vector<double> &weight, vector<double> &value, double 
 }
 
 int main () {
-    // double MAX_WEIGHT = 11;
-    // vector<double> weight = {1, 2, 5, 6, 7};
-    // vector<double> value = {1, 6, 18, 22, 28};
-    // int N = weight.size();
+
     parser();
 
     vector<int> knapsack_distribution = local_search(weight, value, max_weight);

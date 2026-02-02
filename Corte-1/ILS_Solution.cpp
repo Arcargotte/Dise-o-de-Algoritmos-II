@@ -136,34 +136,6 @@ vector<int> local_search (vector<int> &x, vector<double> &weight, vector<double>
         x = best_x;
     }
 
-    // while (!best_found) {
-    //     prev_optimal = optimal;
-    //     optimal =  f(x);
-
-    //     // cout << "El BARRIO: " << neighbors.size() << endl;
-    //     // for (int i = 0; i < neighbors.size(); i++){
-            
-    //     //     for (int j = 0; j < N; j++){
-                
-    //     //         cout << neighbors[i][j] << " ";
-    //     //     }
-    //     //     cout << endl;
-    //     // }
-
-    //     // for (int i = 0; i < neighbors.size(); i++){
-    //     //     if (f(neighbors[i]) > optimal){
-    //     //         x = neighbors[i];
-    //     //         optimal = f(x);
-    //     //         // cout << "Optimal: " << optimal << endl;
-    //     //     }
-    //     // }
-
-    //     // if (prev_optimal >= optimal) {
-    //     //     best_found = true;
-    //     // }
-
-    // }
-
     return x;
 
 }

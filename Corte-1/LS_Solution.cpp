@@ -131,44 +131,11 @@ vector<int> local_search (vector<double> &weight, vector<double> &value, double 
         x = best_x;
     }
 
-    // while (!best_found) {
-    //     prev_optimal = optimal;
-    //     optimal =  f(x);
-
-    //     // cout << "El BARRIO: " << neighbors.size() << endl;
-    //     // for (int i = 0; i < neighbors.size(); i++){
-            
-    //     //     for (int j = 0; j < N; j++){
-                
-    //     //         cout << neighbors[i][j] << " ";
-    //     //     }
-    //     //     cout << endl;
-    //     // }
-
-    //     // for (int i = 0; i < neighbors.size(); i++){
-    //     //     if (f(neighbors[i]) > optimal){
-    //     //         x = neighbors[i];
-    //     //         optimal = f(x);
-    //     //         // cout << "Optimal: " << optimal << endl;
-    //     //     }
-    //     // }
-
-    //     // if (prev_optimal >= optimal) {
-    //     //     best_found = true;
-    //     // }
-
-    // }
-
     return x;
 
 }
 
 int main () {
-    // double MAX_WEIGHT = 11;
-    // vector<double> weight = {1, 2, 5, 6, 7};
-    // vector<double> value = {1, 6, 18, 22, 28};
-    // int N = weight.size();
-    parser();
 
     vector<int> knapsack_distribution = local_search(weight, value, max_weight);
 

@@ -98,21 +98,10 @@ vector<int> local_search_light (vector<int> &x, vector<double> &weight, vector<d
         prev_optimal = optimal;
         neighbors = neighborhood(x);
 
-        // cout << "El BARRIO: " << endl;
-        // for (int i = 0; i < neighbors.size(); i++){
-            
-        //     for (int j = 0; j < N; j++){
-                
-        //         cout << neighbors[i][j] << " ";
-        //     }
-        //     cout << endl;
-        // }
-
         for (int i = 0; i < neighbors.size(); i++){
             if (f(neighbors[i]) > optimal){
                 x = neighbors[i];
                 optimal = f(x);
-                // cout << "Optimal: " << optimal << endl;
             }
         }
 

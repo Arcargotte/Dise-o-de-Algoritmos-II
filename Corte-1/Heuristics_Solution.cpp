@@ -15,35 +15,6 @@ using namespace std;
 //  * @param value Vector del valor de los ítems, donde value[i] corresponde al valor del i-ésimo ítem del problema.
 //  * @param max_weight Número real que define el peso máximo que puede cargar el Knapsack. 
 //  */
-// vector<int> standard_greedy_algorithm (vector<double> &weight, vector<double> &value, double &max_weight)
-// {    
-//     long N = weight.size();
-//     item density_arr [N];
-//     double knapsack_total_weight = 0;
-//     vector<int> knapsack_distribution (N,0);
-    
-//     for(int i = 0; i < N; i++){
-//         density_arr[i].density = value[i] / weight[i];
-//         density_arr[i].id = i;
-//     }
-
-//     sort(density_arr, density_arr + N, [](const item &a, const item &b){
-//         return a.density > b.density; 
-//     });
-
-//     double total_weight = 0;
-//     double total_value = 0;
-
-//     for (int i = 0; i < N; i++){
-//         if (weight[density_arr[i].id] + total_weight <= max_weight){
-//             total_weight += weight[density_arr[i].id];
-//             total_value += value[density_arr[i].id];
-//             knapsack_distribution[density_arr[i].id] = 1;
-//         }
-//     }
-    
-//     return knapsack_distribution;
-// }
 
 int main () {
 

@@ -106,11 +106,6 @@ int main(){
 
     
     vector<double> result = ExactSolution(N, max_weight, value, weight);
-    // for (int i = 0; i < result.size(); i++)
-    // {
-    //     cout << result[i] << " ";
-    // }
-    // cout << "\n";
     
     double total_value = 0;
 
