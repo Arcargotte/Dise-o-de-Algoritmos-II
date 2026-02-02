@@ -13,6 +13,13 @@
 
 using namespace std;
 
+/**
+ * Imprime una matriz de tamaño M N en stdout.
+ * 
+ * @param m Matriz.
+ * @param f Número de filas.
+ * @param c Número de columnas.
+ */
 void Print2DMtx(vector<vector<double>> m, double f, double c){
     for (double i = 0; i < f; i++)
     {
@@ -24,7 +31,16 @@ void Print2DMtx(vector<vector<double>> m, double f, double c){
     }
     cout << "\n";
 }
-
+/**
+ * Genera la solución exacta del problema 1-0 Knapsack utilizando programación dinámica.
+ * 
+ * @param n Número de ítems del problema.
+ * @param k Capacidad o peso máximo del knapsack.
+ * @param profit Vector del valor de los ítems, donde value[i] corresponde al valor del i-ésimo ítem del problema.
+ * @param weight Vector del peso de los ítems, donde weight[i] corresponde al peso del i-ésimo ítem del problema.
+ * @param max_weight Número real que define el peso máximo que puede cargar el Knapsack.
+ * @return arreglo binario X[0..N] donde X[i] = 1 indica que el i-ésimo ítem está en el knapsack y X[i] = 0 que no.
+ */
 vector<double> ExactSolution(long long n, long long k, vector<double> profit, vector<double> weight){
 
     // 0 es el peso | 1 es el profit

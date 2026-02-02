@@ -28,7 +28,8 @@ struct item {
  * 
  * @param weight Vector del peso de los ítems, donde weight[i] corresponde al peso del i-ésimo ítem del problema.
  * @param value Vector del valor de los ítems, donde value[i] corresponde al valor del i-ésimo ítem del problema.
- * @param max_weight Número real que define el peso máximo que puede cargar el Knapsack. 
+ * @param max_weight Número real que define el peso máximo que puede cargar el Knapsack.
+ * @return arreglo binario X[0..N] donde X[i] = 1 indica que el i-ésimo ítem está en el knapsack y X[i] = 0 que no.
  */
 vector<int> standard_greedy_algorithm (vector<double> &weight, vector<double> &value, double &max_weight)
 {    
@@ -60,6 +61,21 @@ vector<int> standard_greedy_algorithm (vector<double> &weight, vector<double> &v
     return knapsack_distribution;
 }
 
+/**
+ *  Lee el archivo example.txt y actualiza las variables globales weight, value, N y max_weight.
+ * 
+ * Actualiza el arreglo de pesos, weight, el de valores, value, la cantidad de ítems de la instancia del problema N y el límite de peso max_weight, leyendo el archivo de 
+ * texto plano example.txt que está especialmente formateado para que puedan inicializarse las variables mencionadas. Este formato consiste en:
+ * 
+ * <number of items>
+ * <item 1> <value 1> <weight 1>
+ * <item 2> <value 2> <weight 2>
+ * ...
+ * <item n> <value n> <weight n>
+ * <capacity or max. weight>
+ * 
+ * Esta función se apoya del ejecutable generator.cpp y que a través del archivo makefile crea una instancia del problema 1-0 Knapsack en example.txt
+ */
 void parser() 
 {
     int num_items;
@@ -97,11 +113,6 @@ void parser()
     inputFile.close(); // Close the file stream
 
     N = num_items;
-    
-    // for (int i = 0; i < num_items; i++){
-    //     cout << value[i] << " " << weight[i] << endl;
-    // }
-    // cout << "max_weight: " << max_weight << endl;
 }
 
 #endif
