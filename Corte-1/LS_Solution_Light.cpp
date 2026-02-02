@@ -14,6 +14,9 @@ using namespace std;
  * Con xi siendo una función booleana que evalúa a 1 si el i-ésimo objeto forma parte de la solución x. Resumidamente, la f(x) retorna el valor acumulado de los ítems en la solución x si el peso
  * no excede el límite W y retorna -1 en el caso contrario. 
  * 
+ *  * Sobre la vecindad usada en la búsqueda local: la vecindad de una solución x define una vecindad ligera cuyos únicos vecinos son aquellas posibles soluciones que mantienen un número constante
+ * de ítems en el Knapsack.
+ * 
  * @param weight Vector del peso de los ítems, donde weight[i] corresponde al peso del i-ésimo ítem del problema.
  * @param value Vector del valor de los ítems, donde value[i] corresponde al valor del i-ésimo ítem del problema.
  * @param max_weight Número real que define el peso máximo que puede cargar el Knapsack. 
