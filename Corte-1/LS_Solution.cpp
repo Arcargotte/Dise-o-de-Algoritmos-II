@@ -23,12 +23,33 @@ vector<int> local_search (vector<double> &weight, vector<double> &value, double 
     vector<int> x = standard_greedy_algorithm(weight, value, max_weight);
     int N = x.size();
 
+    //Eval. function
+    auto f = [value, weight, max_weight, N](vector<int> &solution)
+    {
+        double eval = 0;
+        double w = 0;
+        for (int i = 0; i < N; i++){
+            if (solution[i] == 1){
+                eval += value[i];
+                w += weight[i];
+            }
+        }
+        if (w > max_weight){
+            eval = -1;
+        }
+
+        return eval;
+    };
+    // end
+
     //Generate heavy-neighborhood of initial solution x
-    auto neighborhood = [N](vector<int> x){
+    auto best_neighbor = [N, f](vector<int> x){
         vector<int> vx;
         vector<int> arr_ones;
         vector<int> arr_zeros;
         vector<vector<int>> neighbors = {};
+        double optimal = f(x);
+        vector<int> v_sol = x;
         for (int i = 0; i < N; i++){
             vx = x;
             (vx[i] == 1) ? arr_ones.push_back(i) : arr_zeros.push_back(i);
@@ -51,7 +72,11 @@ vector<int> local_search (vector<double> &weight, vector<double> &value, double 
                 vx[pos_ones] = 0;
                 vx[pos_zeros] = 1;
 
-                neighbors.push_back(vx);
+                if(f(vx) > optimal){
+                    optimal = f(vx);
+                    v_sol = vx;
+                }
+                // neighbors.push_back(vx);
 
                 for (int k = 0; k < vx.size(); k++){
                     if (banned_positions[k] == 0) {
@@ -61,7 +86,11 @@ vector<int> local_search (vector<double> &weight, vector<double> &value, double 
                         } else {
                             vx[k] = 1;
                         }
-                        neighbors.push_back(vx);
+                        // neighbors.push_back(vx);
+                        if(f(vx) > optimal){
+                            optimal = f(vx);
+                            v_sol = vx;
+                        }
                         vx[k] = temp;
                     }
                     
@@ -81,62 +110,52 @@ vector<int> local_search (vector<double> &weight, vector<double> &value, double 
             }
         }
 
-        return neighbors;
+        return v_sol;
     };
 
     // end
 
-    //Eval. function
-    auto f = [value, weight, max_weight, N](vector<int> &solution)
-    {
-        double eval = 0;
-        double w = 0;
-        for (int i = 0; i < N; i++){
-            if (solution[i] == 1){
-                eval += value[i];
-                w += weight[i];
-            }
-        }
-        if (w > max_weight){
-            eval = -1;
-        }
-
-        return eval;
-    };
-    // end
+    
 
     vector <vector <int>> neighbors = {};
+    vector <int> best_x;
     bool best_found = false;
     double optimal =  f(x);
-    double prev_optimal = 0;
-    while (!best_found) {
-        prev_optimal = optimal;
-        optimal =  f(x);
-        neighbors = neighborhood(x);
 
-        // cout << "El BARRIO: " << neighbors.size() << endl;
-        // for (int i = 0; i < neighbors.size(); i++){
-            
-        //     for (int j = 0; j < N; j++){
-                
-        //         cout << neighbors[i][j] << " ";
-        //     }
-        //     cout << endl;
-        // }
 
-        for (int i = 0; i < neighbors.size(); i++){
-            if (f(neighbors[i]) > optimal){
-                x = neighbors[i];
-                optimal = f(x);
-                // cout << "Optimal: " << optimal << endl;
-            }
-        }
+    best_x = best_neighbor(x);
 
-        if (prev_optimal >= optimal) {
-            best_found = true;
-        }
-
+    if (f(best_x) >= optimal) {
+        x = best_x;
     }
+
+    // while (!best_found) {
+    //     prev_optimal = optimal;
+    //     optimal =  f(x);
+
+    //     // cout << "El BARRIO: " << neighbors.size() << endl;
+    //     // for (int i = 0; i < neighbors.size(); i++){
+            
+    //     //     for (int j = 0; j < N; j++){
+                
+    //     //         cout << neighbors[i][j] << " ";
+    //     //     }
+    //     //     cout << endl;
+    //     // }
+
+    //     // for (int i = 0; i < neighbors.size(); i++){
+    //     //     if (f(neighbors[i]) > optimal){
+    //     //         x = neighbors[i];
+    //     //         optimal = f(x);
+    //     //         // cout << "Optimal: " << optimal << endl;
+    //     //     }
+    //     // }
+
+    //     // if (prev_optimal >= optimal) {
+    //     //     best_found = true;
+    //     // }
+
+    // }
 
     return x;
 

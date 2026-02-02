@@ -116,7 +116,6 @@ vector<int> iterative_local_search (vector<double> &weight, vector<double> &valu
 
     // Perturb function
     auto perturba_inador = [weight, value, max_weight, N](vector<int> x){
-        int k = N / 4;
         vector<int> arr_ones;
         vector<int> arr_zeros;
 
@@ -127,6 +126,8 @@ vector<int> iterative_local_search (vector<double> &weight, vector<double> &valu
                 arr_zeros.push_back(i);
             }
         }
+
+        int k = arr_ones.size() / 4;
 
         int ones_size = arr_ones.size();
         int zeros_size = arr_zeros.size();
@@ -163,7 +164,7 @@ vector<int> iterative_local_search (vector<double> &weight, vector<double> &valu
         }
 
         double current_weight = 0;
-        for (int i = 0; i < k; i++){
+        for (int i = 0; i < N; i++){
             if (x_prima[i] == 1) {
                 current_weight += weight[i];
             }
