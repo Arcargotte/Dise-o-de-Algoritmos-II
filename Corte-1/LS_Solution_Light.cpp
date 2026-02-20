@@ -27,7 +27,7 @@ vector<int> local_search (vector<double> &weight, vector<double> &value, double 
     vector<int> x = standard_greedy_algorithm(weight, value, max_weight);
     int N = x.size();
 
-    //Generate heavy-neighborhood of initial solution x
+    //Generate neighborhood of initial solution x
     auto neighborhood = [N](vector<int> x){
         vector<int> vx;
         vector<int> arr_ones;

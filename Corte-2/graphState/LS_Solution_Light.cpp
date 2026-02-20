@@ -37,7 +37,6 @@ vector<int> local_search (vector<double> &weight, vector<double> &value, double 
     vector<int> x = standard_greedy_algorithm(weight, value, max_weight);
     int N = x.size();
 
-
     auto f = [value, weight, max_weight, N](vector<int> &solution)
     {
         double eval = 0;
