@@ -159,7 +159,7 @@ vector<int> simulated_annealing(){
 
             for(vector<int> s_prima_prima : neighbors){
                 if(check_probability(s_prima_prima, iter_f, t)){
-                    cout << "s_prima_prima: " << endl;
+                    // cout << "s_prima_prima: " << endl;
                     print_vector(s_prima_prima);
 
                     s_prima = s_prima_prima;

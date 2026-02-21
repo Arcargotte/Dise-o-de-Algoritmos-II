@@ -33,7 +33,7 @@ unsigned long long ULLRepresentation(vector<int> knapsack_distribution){
  * @param max_weight Número real que define el peso máximo que puede cargar el Knapsack.
  * @return arreglo binario X[0..N] donde X[i] = 1 indica que el i-ésimo ítem está en el knapsack y X[i] = 0 que no.
  */
-vector<int> local_search (vector<double> &weight, vector<double> &value, double &max_weight){
+vector<int> tabu_search (vector<double> &weight, vector<double> &value, double &max_weight){
 
     vector<unsigned long long> tabu_list(50, 0);
     
@@ -161,7 +161,7 @@ vector<int> local_search (vector<double> &weight, vector<double> &value, double 
 int main () {
     parser();
 
-    vector<int> knapsack_distribution = local_search(weight, value, max_weight);
+    vector<int> knapsack_distribution = tabu_search(weight, value, max_weight);
 
     double total_value = 0;
 
