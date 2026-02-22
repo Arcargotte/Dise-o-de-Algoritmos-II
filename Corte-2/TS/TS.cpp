@@ -153,10 +153,11 @@ vector<int> tabu_search (vector<double> &weight, vector<double> &value, double &
 int main () {
     parser();
 
+    // Buscamos la solución y la imprimimos en el estandar output
     vector<int> tabu_solution = tabu_search(weight, value, max_weight);
-
     print_solution(tabu_solution);
 
+    // Colocamos la solución en un CSV
     double tabu_function_cost = f(tabu_solution);
 
     ofstream Optfile("../graphState/output/ts.csv");
