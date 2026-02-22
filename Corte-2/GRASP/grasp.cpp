@@ -32,27 +32,39 @@ vector<int> genPermutation(int N) {
 }
 
 /**
- * Realiza búsqueda local clásica sobre una solución X.
- * 
- * A partir de una solución X al problema 1-0 Knapsack dado (que consigue a partir de un algoritmo voraz estándar), explora su vecindad Vx en búsqueda de un vecino estrictamente
- * mejor según la función de evaluación f, donde f viene definida por la siguiente ecuación
- * 
- * f(x) = ∑ (vᵢ * xᵢ) si  ∑ (wᵢ * xᵢ) <= W; f(x) = -1 si ∑ (wᵢ * xᵢ) > W
- * 
- * Con xi siendo una función booleana que evalúa a 1 si el i-ésimo objeto forma parte de la solución x. Resumidamente, la f(x) retorna el valor acumulado de los ítems en la solución x si el peso
- * no excede el límite W y retorna -1 en el caso contrario. 
- * 
- *  * Sobre la vecindad usada en la búsqueda local: la vecindad de una solución x define una vecindad ligera cuyos únicos vecinos son aquellas posibles soluciones que mantienen un número constante
- * de ítems en el Knapsack.
- * 
- * @param weight Vector del peso de los ítems, donde weight[i] corresponde al peso del i-ésimo ítem del problema.
- * @param value Vector del valor de los ítems, donde value[i] corresponde al valor del i-ésimo ítem del problema.
- * @param max_weight Número real que define el peso máximo que puede cargar el Knapsack.
- * @return arreglo binario X[0..N] donde X[i] = 1 indica que el i-ésimo ítem está en el knapsack y X[i] = 0 que no.
+ * @brief Aplica búsqueda local sobre una solución binaria.
+ *
+ * A partir de una solución inicial x, genera el mejor vecino posible
+ * mediante:
+ *   1) Intercambios 1-0 (swap entre posiciones activas e inactivas).
+ *   2) Flip individual de cada bit.
+ *
+ * En cada iteración selecciona el mejor vecino.
+ * El proceso termina cuando no se encuentra una mejora en la función objetivo.
+ *
+ * @param x Solución inicial (vector binario 0/1). Se modifica si se encuentran mejoras.
+ * @param weight Vector de pesos de los ítems.
+ * @param value Vector de valores de los ítems.
+ * @param max_weight Capacidad máxima de la mochila.
+ * @return Vector<int> Mejor solución local encontrada.
  */
 vector<int> local_search_light (vector<int> &x, vector<double> &weight, vector<double> &value, double &max_weight){
     int N = x.size();
 
+        /**
+     * @brief Genera el mejor vecino de una solución binaria según nuestro esquema de vecindad.
+     *
+     * Dada una solución x, explora su vecindario definido por:
+     *   1) Intercambios 1-0: reemplaza un ítem seleccionado por uno no seleccionado.
+     *   2) Flip individual: invierte cada bit de la solución.
+     *
+     * Evalúa cada vecino utilizando la función objetivo f() y mantiene
+     * el mejor encontrado. Si ningún vecino mejora la solución original,
+     * retorna la misma solución.
+     *
+     * @param x Solución binaria actual (0/1).
+     * @return Vector<int> Mejor solución vecina encontrada.
+     */
     auto bestNeighbor = [N](vector<int> x){
         vector<int> vx;
         vector<int> arr_ones;
@@ -120,7 +132,15 @@ vector<int> local_search_light (vector<int> &x, vector<double> &weight, vector<d
     return x;
 }
 
-
+/**
+ * @brief Genera una solución factible aleatoria para el problema de la mochila.
+ *
+ * Recorre los ítems en un orden aleatorio (permutación) y los agrega
+ * mientras no se exceda la capacidad máxima.
+ *
+ * @param N Número total de ítems.
+ * @return Vector<int> Solución binaria factible generada aleatoriamente.
+ */
 vector<int> random_solution(int N){
     vector<int> perm = genPermutation(N);
     vector<int> x(N);
@@ -136,6 +156,21 @@ vector<int> random_solution(int N){
     return x;
 }
 
+/**
+ * @brief Construye la Lista Restringida de Candidatos (RCL) para GRASP.
+ *
+ * Calcula la densidad valor/peso de cada ítem factible que aún no ha sido
+ * seleccionado. Luego determina un umbral basado en el parámetro alpha:
+ *
+ *      criterio = max_density + alpha * (min_density - max_density)
+ *
+ * Los ítems cuya densidad sea mayor o igual al criterio se agregan a la RCL.
+ *
+ * @param current_weight Peso actual acumulado en la solución parcial.
+ * @param alpha Parámetro de control de aleatorización (0 <= alpha <= 1).
+ * @param chosen Vector con los índices ya seleccionados.
+ * @return Vector<item> Lista restringida de candidatos factibles.
+ */
 vector<item> restricted_candidate_list (double current_weight, double alpha, vector<int> chosen){
 
     long N = weight.size();
@@ -173,8 +208,6 @@ vector<item> restricted_candidate_list (double current_weight, double alpha, vec
 
     double criteria = max_density + alpha * (min_density - max_density);
 
-    // cout << "Criteria: " << criteria << endl;
-
     for(item i : density_arr){
 
         bool was_chosen = false;
@@ -192,11 +225,21 @@ vector<item> restricted_candidate_list (double current_weight, double alpha, vec
     }
 
     return rcl;
-
 }
 
-
-
+/**
+ * @brief Construye una solución usando la fase constructiva de GRASP.
+ *
+ * Iterativamente:
+ *   1) Genera la Lista Restringida de Candidatos (RCL).
+ *   2) Selecciona aleatoriamente un elemento de la RCL.
+ *   3) Lo agrega a la solución si es factible.
+ *
+ * El proceso termina cuando la RCL queda vacía.
+ *
+ * @param N Número total de ítems.
+ * @return Vector<int> Solución binaria construida mediante greedy aleatorizado.
+ */
 vector<int> random_greedy_solution(int N){
 
     int i = 0;
@@ -231,6 +274,17 @@ vector<int> random_greedy_solution(int N){
 
 }
 
+/**
+ * @brief Implementa la metaheurística GRASP para el problema de la mochila.
+ *
+ * Ejecuta múltiples iteraciones compuestas por:
+ *   1) Construcción de una solución greedy aleatoria.
+ *   2) Mejora mediante búsqueda local (best-improvement).
+ *   3) Actualización de la mejor solución global encontrada.
+ *
+ * @param N Número total de ítems.
+ * @return Vector<int> Mejor solución encontrada tras las iteraciones de GRASP.
+ */
 vector<int> grasp(int N){
 
     vector<int> s = random_solution(N);
