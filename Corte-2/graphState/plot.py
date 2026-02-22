@@ -31,10 +31,14 @@ ax.tick_params(axis='y', colors="#FFFFFF")
 
 def drawChart():
     # Leer CSV
-    df = pd.read_csv("data.csv")
-    dfHeuristic = pd.read_csv("heuristic.csv")
-    dfLS = pd.read_csv("ls.csv")
-    dfOptimal = pd.read_csv("optimal.csv")
+    df = pd.read_csv("./output/data.csv")
+    dfHeuristic = pd.read_csv("./output/heuristic.csv")
+    # dfLS = pd.read_csv("./output/ls.csv")
+    dfOptimal = pd.read_csv("./output/optimal.csv")
+    dfGRASP = pd.read_csv("./output/grasp.csv")
+    dfSA = pd.read_csv("./output/simulated_annealing.csv")
+    dfTS = pd.read_csv("./output/ts.csv")
+    dfEvolutive = pd.read_csv("./output/evolutive.csv")
 
     plt.plot(df["solution_id"], df["beneficio"], c=palette['primary'], linewidth=0.8)
     plt.xlabel("Solution ID", c="gray")
@@ -55,6 +59,63 @@ def drawChart():
         color= "gray"
     )
 
+    # GRASP
+    graspSolution = dfGRASP.iloc[0, 0]
+    graspValue = dfGRASP.iloc[0, 1]
+
+    plt.scatter(graspSolution, graspValue, 10, marker='D', c="#C13F1E", alpha=0.7, zorder=4)
+    plt.annotate(
+        "GRASP",
+        (graspSolution, graspValue),
+        xytext=(3, 10),
+        textcoords="offset points",
+        fontsize=8,
+        color= "gray"
+    )
+
+    # SA
+    SASolution = dfSA.iloc[0, 0]
+    SAValue = dfSA.iloc[0, 1]
+
+    plt.scatter(SASolution, SAValue, 10, marker='D', c="#FFFFFF", alpha=0.7, zorder=4)
+    plt.annotate(
+        "SA",
+        (SASolution, SAValue),
+        xytext=(10, 3),
+        textcoords="offset points",
+        fontsize=8,
+        color= "gray"
+    )
+
+    # TS
+    TSSolution = dfTS.iloc[0, 0]
+    TSValue = dfTS.iloc[0, 1]
+
+    plt.scatter(TSSolution, TSValue, 10, marker='D', c="#FF97F3", alpha=0.7, zorder=4)
+    plt.annotate(
+        "TS",
+        (TSSolution, TSValue),
+        xytext=(10, 3),
+        textcoords="offset points",
+        fontsize=8,
+        color= "gray"
+    )
+
+    # Evolutiva
+    EvolutiveSolution = dfEvolutive.iloc[0, 0]
+    EvolutiveValue = dfEvolutive.iloc[0, 1]
+
+    plt.scatter(EvolutiveSolution, EvolutiveValue, 10, marker='D', c="#78FA67", alpha=0.7, zorder=4)
+    plt.annotate(
+        "Evolutive",
+        (EvolutiveSolution, EvolutiveValue),
+        xytext=(10, 3),
+        textcoords="offset points",
+        fontsize=8,
+        color= "gray"
+    )
+
+    # Optimal
     optimalSolution = dfOptimal.iloc[0, 0]
     optimalValue = dfOptimal.iloc[0, 1]
 
@@ -69,19 +130,19 @@ def drawChart():
     )
 
 
-    plt.plot(dfLS["Solution"], dfLS["Value"], marker="o", markersize=1.5, color="#D9AD26", linewidth=0.8)
+    # plt.plot(dfLS["Solution"], dfLS["Value"], marker="o", markersize=1.5, color="#D9AD26", linewidth=0.8)
 
-    pathLS_x = dfLS["Solution"]
-    pathLS_y = dfLS["Value"]
+    # pathLS_x = dfLS["Solution"]
+    # pathLS_y = dfLS["Value"]
 
-    for i in range(len(pathLS_x) - 1):
-        plt.annotate(
-            "",
-            xy = (pathLS_x[i+1], pathLS_y[i+1]),
-            xytext = (pathLS_x[i], pathLS_y[i]),
-            arrowprops=dict(arrowstyle="->", color="#D9AD26", linewidth=1),
-            zorder=3
-        )
+    # for i in range(len(pathLS_x) - 1):
+    #     plt.annotate(
+    #         "",
+    #         xy = (pathLS_x[i+1], pathLS_y[i+1]),
+    #         xytext = (pathLS_x[i], pathLS_y[i]),
+    #         arrowprops=dict(arrowstyle="->", color="#D9AD26", linewidth=1),
+    #         zorder=3
+    #     )
 
     plt.show()
 

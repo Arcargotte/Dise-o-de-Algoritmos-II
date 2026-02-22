@@ -1,17 +1,7 @@
 #include <iostream>
 #include <vector>
-#include "conmons.h"
+#include "../conmons.h"
 using namespace std;
-
-unsigned long long ULLRepresentation(vector<int> knapsack_distribution){
-    unsigned long long id = 0;
-    
-    for (unsigned long long i = 0; i < knapsack_distribution.size(); i++) {
-        id = (id << 1) | knapsack_distribution[i];
-    }
-
-    return id;
-}
 
 /**
  * Realiza búsqueda local clásica sobre una solución X.
@@ -102,7 +92,7 @@ vector<int> local_search (vector<double> &weight, vector<double> &value, double 
         return best_solution;
     };
 
-    ofstream file("ls.csv");
+    ofstream file("./output/ls.csv");
 
     file << "Solution,Value\n";
 
