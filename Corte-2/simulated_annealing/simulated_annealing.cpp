@@ -10,6 +10,15 @@ using namespace std;
 double temp_ini = 100;
 double alpha_t = 0.98;
 
+/**
+ * @brief Genera una permutación aleatoria de los enteros {0,1,...,N-1}.
+ *
+ * Construye un vector con los índices en orden natural y luego los
+ * mezcla utilizando el algoritmo shuffle.
+ *
+ * @param N Tamaño de la permutación.
+ * @return Vector<int> con una permutación aleatoria de tamaño N.
+ */
 vector<int> genPermutation(int N) {
     vector<int> perm(N);
 
@@ -25,6 +34,15 @@ vector<int> genPermutation(int N) {
     return perm;
 }
 
+/**
+ * @brief Genera una solución inicial factible aleatoria para la mochila.
+ *
+ * Construye una permutación aleatoria de los índices y agrega ítems
+ * en ese orden mientras no se exceda la capacidad máxima.
+ *
+ * @param N Número total de ítems.
+ * @return Vector<int> Solución binaria factible generada aleatoriamente.
+ */
 vector<int> random_solution(int N){
     vector<int> perm = genPermutation(N);
     vector<int> x(N);
@@ -39,7 +57,18 @@ vector<int> random_solution(int N){
 
     return x;
 }  
-
+/**
+ * @brief Genera el vecindario completo de una solución binaria.
+ *
+ * El vecindario está definido por:
+ *   1) Intercambios 1-0 (swap entre un ítem seleccionado y uno no seleccionado).
+ *   2) Flip individual de cada bit de la solución.
+ *
+ * Devuelve todas las soluciones vecinas generadas.
+ *
+ * @param x Solución binaria actual.
+ * @return Vector<vector<int>> Conjunto de soluciones vecinas.
+ */
 auto neighborhood(vector<int> x){
     vector<int> vx;
     vector<int> arr_ones;
@@ -78,7 +107,21 @@ auto neighborhood(vector<int> x){
     return neighbors;
 }
 
-
+/**
+ * @brief Determina si se acepta una solución candidata según su probabilidad asignada.
+ *
+ * Si la solución candidata mejora la actual (delta >= 0), se acepta siempre.
+ * Si empeora, se acepta con probabilidad:
+ *
+ *      exp((candidate_f - current_f) / t)
+ *
+ * donde t es la temperatura actual.
+ *
+ * @param current_f Valor de la función objetivo de la solución actual.
+ * @param candidate_f Valor de la función objetivo de la solución candidata.
+ * @param t Temperatura actual del algoritmo.
+ * @return true si la solución es aceptada, false en caso contrario.
+ */
 bool check_probability(double current_f, double candidate_f, double t){
 
     double delta = candidate_f - current_f;
@@ -94,6 +137,23 @@ bool check_probability(double current_f, double candidate_f, double t){
     return dist(rng) < probability;
 }
 
+/**
+ * @brief Implementa la metaheurística Simulated Annealing para la mochila.
+ *
+ * Procedimiento:
+ *   1) Genera una solución inicial aleatoria.
+ *   2) Mientras no se alcance el número máximo de iteraciones:
+ *        - Genera el vecindario.
+ *        - Evalúa vecinos en orden aleatorio.
+ *        - Acepta un vecino según el criterio probabilístico.
+ *        - Actualiza la mejor solución encontrada.
+ *        - Reduce la temperatura mediante enfriamiento geométrico.
+ *
+ * Utiliza el esquema de enfriamiento:
+ *      t = t * alpha_t
+ *
+ * @return Vector<int> Mejor solución encontrada durante el proceso.
+ */
 vector<int> simulated_annealing(){
 
     vector<int> s_prima = random_solution(N);
