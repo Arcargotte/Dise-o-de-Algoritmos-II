@@ -7,8 +7,15 @@
 #include "conmons.h"
 using namespace std;
 
-// Criterio de terminacion: ¿Iteraciones?, ¿X iteraciones sin mejoras?
-
+/**
+ * @brief Genera una permutación aleatoria de los enteros {0,1,...,N-1}.
+ *
+ * Construye un vector con los índices en orden natural y luego los
+ * mezcla utilizando el algoritmo shuffle.
+ *
+ * @param N Tamaño de la permutación.
+ * @return Vector<int> con una permutación aleatoria de tamaño N.
+ */
 vector<int> genPermutation(int N) {
     vector<int> perm(N);
 
@@ -24,6 +31,25 @@ vector<int> genPermutation(int N) {
     return perm;
 }
 
+/**
+ * Realiza búsqueda local clásica sobre una solución X.
+ * 
+ * A partir de una solución X al problema 1-0 Knapsack dado (que consigue a partir de un algoritmo voraz estándar), explora su vecindad Vx en búsqueda de un vecino estrictamente
+ * mejor según la función de evaluación f, donde f viene definida por la siguiente ecuación
+ * 
+ * f(x) = ∑ (vᵢ * xᵢ) si  ∑ (wᵢ * xᵢ) <= W; f(x) = -1 si ∑ (wᵢ * xᵢ) > W
+ * 
+ * Con xi siendo una función booleana que evalúa a 1 si el i-ésimo objeto forma parte de la solución x. Resumidamente, la f(x) retorna el valor acumulado de los ítems en la solución x si el peso
+ * no excede el límite W y retorna -1 en el caso contrario. 
+ * 
+ *  * Sobre la vecindad usada en la búsqueda local: la vecindad de una solución x define una vecindad ligera cuyos únicos vecinos son aquellas posibles soluciones que mantienen un número constante
+ * de ítems en el Knapsack.
+ * 
+ * @param weight Vector del peso de los ítems, donde weight[i] corresponde al peso del i-ésimo ítem del problema.
+ * @param value Vector del valor de los ítems, donde value[i] corresponde al valor del i-ésimo ítem del problema.
+ * @param max_weight Número real que define el peso máximo que puede cargar el Knapsack.
+ * @return arreglo binario X[0..N] donde X[i] = 1 indica que el i-ésimo ítem está en el knapsack y X[i] = 0 que no.
+ */
 vector<int> local_search_light (vector<int> &x, vector<double> &weight, vector<double> &value, double &max_weight){
     int N = x.size();
     //Generate neighborhood of initial solution x
@@ -200,12 +226,6 @@ vector<int> random_greedy_solution(int N){
             break;
         }
 
-        // cout << "[";
-        // for(item j : rcl){
-        //     cout << "(" << j.id << ", " << j.density << "), ";
-        // }
-        // cout << "]" << endl;
-
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         mt19937_64 engine(seed); // Using a Mersenne Twister engine
 
@@ -214,8 +234,6 @@ vector<int> random_greedy_solution(int N){
 
         int random_number = dist(engine);
 
-        // cout << "Escogencia random: (" << rcl[random_number].id << ", " << rcl[random_number].density << ")" << endl;
-
         item the = rcl[random_number];
         partial_solution[the.id] = 1;
         current_weight += weight[the.id];
@@ -223,16 +241,6 @@ vector<int> random_greedy_solution(int N){
 
         i++;
     }
-
-    // cout << "[";
-    // for(int i = 0; i < N; i++){
-    //     if(i == N - 1){
-    //         cout << partial_solution[i];
-    //     } else {
-    //         cout << partial_solution[i] << ", ";
-    //     }
-    // }
-    // cout << "]" << endl;
 
     return partial_solution;
 
@@ -294,14 +302,4 @@ int main(){
     }
 
     cout << endl;
-
-    // cout << "[";
-    // for(int i = 0; i < N; i++){
-    //     if(i == N - 1){
-    //         cout << vector[i];
-    //     } else {
-    //         cout << vector[i] << ", ";
-    //     }
-    // }
-    // cout << "]" << endl;
 } 
