@@ -3,7 +3,7 @@
 #include <cmath>
 #include <fstream>
 #include <tuple>
-#include "conmons.h"
+#include "../conmons.h"
 
 using namespace std;
 vector <int> bit;
@@ -37,7 +37,7 @@ int main(){
     double eval = 0;
     double w = 0;
     
-    ofstream file("data.csv");
+    ofstream file("./output/data.csv");
 
     file << "solution_id,beneficio\n";
     long long optimal = 0;
@@ -63,7 +63,7 @@ int main(){
     
     file.close();
 
-    ofstream Optfile("optimal.csv");
+    ofstream Optfile("./output/optimal.csv");
     Optfile << "Solution,Value\n";
     Optfile << optimal_representation << "," << optimal << "\n";
     Optfile.close();

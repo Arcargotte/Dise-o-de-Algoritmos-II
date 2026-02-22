@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include "conmons.h"
+#include "../conmons.h"
 
 using namespace std;
 
@@ -35,7 +35,7 @@ int main () {
         binary_id  = (binary_id  << 1) | knapsack_distribution[i];
     }
 
-    ofstream file("heuristic.csv");
+    ofstream file("./output/heuristic.csv");
 
     file << "Solution,Value\n";
 

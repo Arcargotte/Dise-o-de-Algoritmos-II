@@ -3,12 +3,12 @@
 #include <random>       
 #include <chrono>   
 #include <cmath>
-#include "conmons.h"
+#include "../conmons.h"
 
 using namespace std;
 
-double temp_ini = 1000;
-double alpha_t = 0.9;
+double temp_ini = 100;
+double alpha_t = 0.98;
 
 vector<int> genPermutation(int N) {
     vector<int> perm(N);
@@ -17,7 +17,7 @@ vector<int> genPermutation(int N) {
     iota(perm.begin(), perm.end(), 0);
 
     // generador aleatorio
-    mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+    mt19937 rng(random_device{}());
 
     // mezclar
     shuffle(perm.begin(), perm.end(), rng);
@@ -62,7 +62,7 @@ auto neighborhood(vector<int> x){
 
             vx[pos_ones] = 1;
             vx[pos_zeros] = 0;
-            //end
+            
         }
     }
     for (int k = 0; k < vx.size(); k++){
@@ -78,68 +78,21 @@ auto neighborhood(vector<int> x){
     return neighbors;
 }
 
-double f(vector<int> &solution){
-    double eval = 0;
-    double w = 0;
-    for (int i = 0; i < N; i++){
-        if (solution[i] == 1){
-            eval += value[i];
-            w += weight[i];
-        }
-    }
-    if (w > max_weight){
-        eval = -1;
-    }
 
-    return eval;
-};
+bool check_probability(double current_f, double candidate_f, double t){
 
+    double delta = candidate_f - current_f;
 
-bool check_probability(vector<int> x, double best_f, double t){
+    if(delta >= 0)
+        return true;
 
-    double e = exp(1.0);
-    double sustr = best_f - f(x);
+    double probability = exp(delta / t);  // delta negativo
 
-    double probability;
+    static mt19937 rng(random_device{}());
+    uniform_real_distribution<double> dist(0.0, 1.0);
 
-    if(sustr < 0){
-        probability = 1 / exp(sustr / t);
-    } else {
-        probability = 1;
-    }
-
-    int upper_limit = floor(probability * 100);
-
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    mt19937_64 engine(seed);
-
-    uniform_int_distribution<int> dist(0, 100);
-
-    int random_number = dist(engine);
-
-    return random_number <= upper_limit;
-
+    return dist(rng) < probability;
 }
-
-void print_vector(vector<int> vector){
-
-    int i = 0;
-    cout << "[";
-    int size = vector.size();
-    while(i < size){
-        
-        if(i == size - 1){
-            cout << vector[i];
-        } else {
-            cout << vector[i] << ", ";
-        }
-        
-        i++;
-    }
-    cout << "]" << endl;
-
-}
-
 
 vector<int> simulated_annealing(){
 
@@ -149,19 +102,16 @@ vector<int> simulated_annealing(){
     double best_f = iter_f;
     double t = temp_ini;
     int iterations = 0;
-    while(iterations < 1200){
+    while(iterations < 1000){
         int cooldown = 0;
         while(cooldown < 10){
             vector<vector<int>> neighbors = neighborhood(s_prima);
             
-            mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+            mt19937 rng(random_device{}());
             shuffle(neighbors.begin(), neighbors.end(), rng);
 
             for(vector<int> s_prima_prima : neighbors){
-                if(check_probability(s_prima_prima, iter_f, t)){
-                    // cout << "s_prima_prima: " << endl;
-                    print_vector(s_prima_prima);
-
+                if(check_probability(iter_f, f(s_prima_prima), t)){
                     s_prima = s_prima_prima;
                     iter_f = f(s_prima);
                     double new_f = f(s_prima_prima);
@@ -190,21 +140,13 @@ int main(){
 
     vector<int> solution = simulated_annealing();
 
-    double total_value = 0;
+    print_solution(solution);
 
-    for (int i = 0; i < N; i++){
-        if (solution[i] == 1) {
-            total_value += value[i];
-        }
-    }
-    
-    cout << total_value << endl;
-    for (int i = 0; i < N; i++){
-        if (solution[i] == 1) {
-            cout << value[i] << " " << weight[i] << endl;
-        }
-    }
+    double solution_function_cost = f(solution);
 
-    cout << endl;
+    ofstream Optfile("../graphState/output/simulated_annealing.csv");
+    Optfile << "Solution,Value\n";
+    Optfile << ULLRepresentation(solution) << "," << solution_function_cost << "\n";
+    Optfile.close();
 
 }

@@ -4,7 +4,7 @@
 #include <algorithm>    
 #include <random>       
 #include <chrono>       
-#include "conmons.h"
+#include "../conmons.h"
 using namespace std;
 
 /**
@@ -52,17 +52,17 @@ vector<int> genPermutation(int N) {
  */
 vector<int> local_search_light (vector<int> &x, vector<double> &weight, vector<double> &value, double &max_weight){
     int N = x.size();
-    //Generate neighborhood of initial solution x
 
-    auto neighborhood = [N](vector<int> x){
+    auto bestNeighbor = [N](vector<int> x){
         vector<int> vx;
         vector<int> arr_ones;
         vector<int> arr_zeros;
+        vector<int> best_solution = x;
+        double optimal = f(x);
         vector<vector<int>> neighbors = {};
         for (int i = 0; i < N; i++){
             vx = x;
             (vx[i] == 1) ? arr_ones.push_back(i) : arr_zeros.push_back(i);
-
         }
 
         for (int i = 0; i < arr_ones.size(); i++){
@@ -73,11 +73,14 @@ vector<int> local_search_light (vector<int> &x, vector<double> &weight, vector<d
                 vx[pos_ones] = 0;
                 vx[pos_zeros] = 1;
 
-                neighbors.push_back(vx);
+                double eval = f(vx);
+                if(eval > optimal){
+                    optimal = eval;
+                    best_solution = vx;
+                }                
 
                 vx[pos_ones] = 1;
                 vx[pos_zeros] = 0;
-                //end
             }
         }
         for (int k = 0; k < vx.size(); k++){
@@ -87,48 +90,30 @@ vector<int> local_search_light (vector<int> &x, vector<double> &weight, vector<d
             } else {
                 vx[k] = 1;
             }
-            neighbors.push_back(vx);
-            vx[k] = temp; 
+            double eval = f(vx);
+            if(eval > optimal){
+                optimal = eval;
+                best_solution = vx;
+            }  
+            vx[k] = temp;
         }
-        return neighbors;
+
+        return best_solution;
     };
 
-    //Eval. function
-    auto f = [value, weight, max_weight, N](vector<int> &solution)
-    {
-        double eval = 0;
-        double w = 0;
-        for (int i = 0; i < N; i++){
-            if (solution[i] == 1){
-                eval += value[i];
-                w += weight[i];
-            }
-        }
-        if (w > max_weight){
-            eval = -1;
-        }
-
-        return eval;
-    };
-    // end
-
-    vector <vector <int>> neighbors = {};
-    bool best_found = false;
+    vector <int> var_best_neighbor;
+    bool best_found = true;
     double optimal =  f(x);
     double prev_optimal = 0;
-    while (!best_found) {
+    while (best_found) {
+        best_found = false;
         optimal =  f(x);
         prev_optimal = optimal;
-        neighbors = neighborhood(x);
+        var_best_neighbor = bestNeighbor(x);
+        optimal = f(var_best_neighbor);
 
-        for (int i = 0; i < neighbors.size(); i++){
-            if (f(neighbors[i]) > optimal){
-                x = neighbors[i];
-                optimal = f(x);
-            }
-        }
-
-        if (prev_optimal >= optimal) {
+        if (optimal > prev_optimal) {
+            x = var_best_neighbor;
             best_found = true;
         }
     }
@@ -246,23 +231,6 @@ vector<int> random_greedy_solution(int N){
 
 }
 
-
-double f(vector<int> &solution){
-    double eval = 0;
-    double w = 0;
-    for (int i = 0; i < N; i++){
-        if (solution[i] == 1){
-            eval += value[i];
-            w += weight[i];
-        }
-    }
-    if (w > max_weight){
-        eval = -1;
-    }
-
-    return eval;
-};
-
 vector<int> grasp(int N){
 
     vector<int> s = random_solution(N);
@@ -286,20 +254,13 @@ int main(){
 
     vector<int> grasp_solution = grasp(N);
 
-    double total_value = 0;
+    print_solution(grasp_solution);
 
-    for (int i = 0; i < N; i++){
-        if (grasp_solution[i] == 1) {
-            total_value += value[i];
-        }
-    }
-    
-    cout << total_value << endl;
-    for (int i = 0; i < N; i++){
-        if (grasp_solution[i] == 1) {
-            cout << value[i] << " " << weight[i] << endl;
-        }
-    }
+    double grasp_function_cost = f(grasp_solution);
 
-    cout << endl;
+    ofstream Optfile("../graphState/output/grasp.csv");
+    Optfile << "Solution,Value\n";
+    Optfile << ULLRepresentation(grasp_solution) << "," << grasp_function_cost << "\n";
+    Optfile.close();
+
 } 

@@ -3,11 +3,10 @@
 #include <numeric>     
 #include <algorithm>    
 #include <random>       
-#include <chrono>   
-#include "conmons.h"
+#include <chrono>
+#include "../conmons.h"
 
 using namespace std;
-
 
 int probability_to_combine_parents = 60;
 int probability_to_mutate = 5;
@@ -54,22 +53,6 @@ vector<vector<int>> generate_population(int N, int population_size){
     return population;
 
 }
-
-double f(vector<int> &solution){
-    double eval = 0;
-    double w = 0;
-    for (int i = 0; i < N; i++){
-        if (solution[i] == 1){
-            eval += value[i];
-            w += weight[i];
-        }
-    }
-    if (w > max_weight){
-        eval = -1;
-    }
-
-    return eval;
-};
 
 void print_population(vector<vector<int>> &population) {
     
@@ -134,14 +117,6 @@ vector<int> select_random(vector<vector<int>> population){
         
         i++;
     }
-
-    // cout << "Valor random: " << random_number << endl;
-    // cout << "Valor total: " << total_cost_function << endl;
-    // cout << "Padre seleccionado: [";
-    // for(int sp : selected_parent){
-    //     cout << sp << ",";
-    // }
-    // cout << "]" << endl;
 
     return selected_parent;
 }
@@ -276,30 +251,15 @@ int main(){
 
     int iterations = 0;
 
-    while(iterations < 1000){
-
-        // cout << "Nueva generación" << endl << "---------------------------------------" << endl;
+    while(iterations < 150){
 
         vector<vector<int>> parents = generate_parents(population, parents_size);
 
-        // cout << "Los viejos: " << endl;
-        // print_population(parents);
-
         vector<vector<int>> children = recombine_parents(parents, children_size);
-
-        // cout << "Hijos antes de la mutación: " << endl;
-        // print_population(children);
 
         mutate_children(children);
 
-        // cout << "Hijos después de la mutación: " << endl;
-        // print_population(children);
-
         vector<int> the_best = select_the_best(population);
-
-        // cout << "El mejor de la población es: " << endl;
-        // print_vector(the_best);
-
         
         // Juntar hijos con padres
         for(vector<int> c : children){
@@ -309,33 +269,19 @@ int main(){
         population = generate_parents(population, population_size - 1);
         population.push_back(the_best);
 
-        // cout << "La nueva generación es: " << endl;
-
-        // print_population(population);
-
         iterations++;
-
-        // cout << "---------------------------------------" << endl;
 
     }
 
     vector<int> solution = select_the_best(population);
 
-    double total_value = 0;
+    print_solution(solution);
 
-    for (int i = 0; i < N; i++){
-        if (solution[i] == 1) {
-            total_value += value[i];
-        }
-    }
-    
-    cout << total_value << endl;
-    for (int i = 0; i < N; i++){
-        if (solution[i] == 1) {
-            cout << value[i] << " " << weight[i] << endl;
-        }
-    }
+    double function_cost = f(solution);
 
-    cout << endl;
+    ofstream Optfile("../graphState/output/evolutive.csv");
+    Optfile << "Solution,Value\n";
+    Optfile << ULLRepresentation(solution) << "," << function_cost << "\n";
+    Optfile.close();
 
 }
