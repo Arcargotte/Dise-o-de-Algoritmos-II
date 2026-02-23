@@ -8,7 +8,7 @@
 using namespace std;
 
 double temp_ini = 100;
-double alpha_t = 0.98;
+double alpha_t = 0.995;
 
 /**
  * @brief Genera una permutación aleatoria de los enteros {0,1,...,N-1}.
@@ -162,9 +162,9 @@ vector<int> simulated_annealing(){
     double best_f = iter_f;
     double t = temp_ini;
     int iterations = 0;
-    while(iterations < 1000){
+    while(iterations < 50){
         int cooldown = 0;
-        while(cooldown < 10){
+        while(cooldown < 5){
             vector<vector<int>> neighbors = neighborhood(s_prima);
             
             mt19937 rng(random_device{}());

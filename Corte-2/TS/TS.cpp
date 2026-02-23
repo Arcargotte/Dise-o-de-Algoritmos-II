@@ -130,7 +130,7 @@ vector<int> tabu_search (vector<double> &weight, vector<double> &value, double &
     
     // Esquema de búsqueda tabú
     int iterTabuList = 0;
-    while (iterations < 1000) {
+    while (iterations < 50) {
 
         x = bestNeighbor(x);
         optimal =  f(x);

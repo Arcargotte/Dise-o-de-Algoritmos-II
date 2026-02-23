@@ -9,10 +9,11 @@
 using namespace std;
 
 int probability_to_combine_parents = 60;
-int probability_to_mutate = 5;
+int probability_to_mutate = 3;
 int population_size = 10;
 int parents_size = 6;
 int children_size = 5;
+mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 /**
  * @brief Genera una permutación aleatoria de los índices {0, ..., N-1}.
@@ -32,8 +33,9 @@ vector<int> genPermutation(int N) {
 
     // Llenar con 0,1,2,...,N-1
     iota(perm.begin(), perm.end(), 0);
-    // Generador aleatorio
-    mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+    mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+
     // Mezclar
     shuffle(perm.begin(), perm.end(), rng);
 
@@ -118,37 +120,29 @@ vector<vector<int>> generate_population(int N, int population_size){
 vector<int> select_random(vector<vector<int>> population){
 
     double total_cost_function = 0;
-    vector<int> population_function_cost(population.size(), 0);
-    
-    int i = 0;
-    for(vector<int> p : population){
-        double cost = max(0.0, f(p));
+    vector<double> population_function_cost(population.size(), 0);
+
+    for(int i = 0; i < population.size(); i++){
+        double cost = max(0.0, f(population[i]));
         total_cost_function += cost;
         population_function_cost[i] = total_cost_function;
-        i++;
     }
 
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    mt19937_64 engine(seed);
-
-    uniform_int_distribution<int> dist(0, total_cost_function);
-
-    int random_number = dist(engine);
-
-    vector<int> selected_parent;
-    i = 0;
-    for(int pfc : population_function_cost){
-        if(random_number <= pfc){
-            selected_parent = population[i];
-            break; //Gracias
-        }
-        
-        i++;
+    if(total_cost_function == 0){
+        uniform_int_distribution<int> dist(0, population.size()-1);
+        return population[dist(rng)];
     }
 
-    return selected_parent;
+    uniform_real_distribution<double> dist(0.0, total_cost_function);
+    double random_number = dist(rng);
+
+    for(int i = 0; i < population.size(); i++){
+        if(random_number <= population_function_cost[i])
+            return population[i];
+    }
+
+    return population.back(); // fallback seguro
 }
-
 
 /**
  * @brief Selecciona un subconjunto de padres desde la población actual.
