@@ -51,7 +51,7 @@ vector<int> genPermutation(int N) {
 vector<int> local_search_light (vector<int> &x, vector<double> &weight, vector<double> &value, double &max_weight){
     int N = x.size();
 
-        /**
+    /**
      * @brief Genera el mejor vecino de una solución binaria según nuestro esquema de vecindad.
      *
      * Dada una solución x, explora su vecindario definido por:

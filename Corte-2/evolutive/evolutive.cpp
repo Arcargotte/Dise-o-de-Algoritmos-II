@@ -211,6 +211,9 @@ children sex(vector<int> first_parent, vector<int> second_parent){
         uniform_int_distribution<int> dist(0, 100);
 
         int random_number = dist(engine);
+        // [1, 0, 0]
+        
+        
 
         if(random_number >= probability_to_combine_parents){
             first_child.push_back(first_parent[i]);
