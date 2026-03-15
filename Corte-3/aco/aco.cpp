@@ -171,7 +171,7 @@ int main(int argc, char* argv[]){
     //     cout << value[key] << " " << weight[key] << endl;
     // }
 
-    ofstream out("../../temp_res.txt");
+    ofstream out("./temp_res.txt");
     out << best_ant_solution.profit;
     out.close();
 }

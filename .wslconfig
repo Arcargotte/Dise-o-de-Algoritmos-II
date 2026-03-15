@@ -1,0 +1,9 @@
+[wsl2]
+# Límite de memoria para que no sature tu Windows
+memory=12GB 
+
+# Procesadores virtuales (opcional)
+processors=4
+
+# Espacio de intercambio (Swap) en el disco duro por si se acaba la RAM
+swap=8GB

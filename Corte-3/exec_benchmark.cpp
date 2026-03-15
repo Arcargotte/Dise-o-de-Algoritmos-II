@@ -28,7 +28,11 @@ double ejecutar_con_timeout(int tipo, const string& path, int segundos_limite, d
 
     if (pid == 0) {
         // --- PROCESO HIJO ---
-        if (tipo == 1) {
+        if (tipo == 0) {
+            // resultado_heuristica = memetic();
+            // resultado_heuristica = 1;
+            programa = "./exact/output/exact_solution";
+        }else if (tipo == 1) {
             // resultado_heuristica = memetic();
             // resultado_heuristica = 1;
             programa = "./memetic/output/memetic";
@@ -100,10 +104,16 @@ void ejecutar_benchmark(string ruta_carpeta, int timeout) {
             double tiempo = ejecutar_con_timeout(h, archivo_path, timeout, resultado_heuristica);
             
             if (tiempo >= 0) {
-                cout << "   [Heuristica " << h << "] Terminada en: " << tiempo << "s" << endl;
-                cout << "   [Resultado  "  << h << "] " << resultado_heuristica << endl;
+                if (h == 0){
+                    cout << "   [Solucion Exacta " << "] Terminada en: " << tiempo << "s" << endl;
+                    cout << "   [Resultado   " << "] " << resultado_heuristica << endl;
+                } else {
+                    cout << "   [Heuristica " << h << "] Terminada en: " << tiempo << "s" << endl;
+                    cout << "   [Resultado  "  << h << "] " << resultado_heuristica << endl;
+                }
+
             } else {
-                cout << "   [Heuristica" << h << "] FALLIDA por Timeout" << endl;
+                cout << "   [Heuristica " << h << "] FALLIDA por Timeout" << endl;
             }
         }
     }

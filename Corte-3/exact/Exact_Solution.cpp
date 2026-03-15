@@ -1,0 +1,134 @@
+// implementacion de la solucion exacta de knapsack problem
+
+// el problema consiste en colocar n elementos que consisten de p (profit) y w (peso) en una mochila
+// de tamaño W (capacidad)
+
+
+// vamos a crear una matriz para los elementos 
+
+
+#include <iostream>
+#include <vector>
+#include "../conmons.h"
+
+using namespace std;
+
+/**
+ * Imprime una matriz de tamaño M N en stdout.
+ * 
+ * @param m Matriz.
+ * @param f Número de filas.
+ * @param c Número de columnas.
+ */
+void Print2DMtx(vector<vector<double>> m, double f, double c){
+    for (double i = 0; i < f; i++)
+    {
+        for (double j = 0; j <= c; j++)
+        {
+            cout << m[i][j] << '\t';
+        }
+        cout << "\n";
+    }
+    cout << "\n";
+}
+/**
+ * Genera la solución exacta del problema 1-0 Knapsack utilizando programación dinámica.
+ * 
+ * @param n Número de ítems del problema.
+ * @param k Capacidad o peso máximo del knapsack.
+ * @param profit Vector del valor de los ítems, donde value[i] corresponde al valor del i-ésimo ítem del problema.
+ * @param weight Vector del peso de los ítems, donde weight[i] corresponde al peso del i-ésimo ítem del problema.
+ * @param max_weight Número real que define el peso máximo que puede cargar el Knapsack.
+ * @return arreglo binario X[0..N] donde X[i] = 1 indica que el i-ésimo ítem está en el knapsack y X[i] = 0 que no.
+ */
+vector<double> ExactSolution(long long n, long long k, vector<double> profit, vector<double> weight){
+
+    // 0 es el peso | 1 es el profit
+    vector<vector<double>> elements = {weight, profit};
+    vector<vector<double>> knapsack (n, vector<double>(k + 1,0));
+
+
+    // aplicamos el algoritmo exacto
+    for (int i = 0; i < n; i++)
+    {
+        double v = elements[1][i];
+        double w = elements[0][i];
+
+        for (int j = 0; j <= k; j++)
+        {
+            long long jj = j - w;
+            long long ii = i - 1;
+            
+            if (i == 0){
+                if (w <= j){
+                    knapsack[i][j] = v;
+                }
+            }
+            else if(jj < 0){
+                knapsack[i][j] = knapsack[ii][j];
+            }
+            else{
+                if(knapsack[ii][j] < knapsack[ii][jj]+v){
+                    knapsack[i][j] = knapsack[ii][jj]+v;
+                }
+                else{
+                    knapsack[i][j] = knapsack[ii][j];
+                }
+            }  
+        }
+    }
+    
+    // Print2DMtx(knapsack, n, k);
+
+    long long l = n-1;
+    long long o = k;
+    vector<double> sol (n, 0); 
+
+    while (l >= 0)
+    {
+        double w = elements[0][l];
+
+        if (l == 0 && knapsack[l][o] != 0) {
+            sol[l] = 1;
+        }else if(l != 0 && knapsack[l][o] != knapsack[l-1][o]){
+
+            o = o - w;
+            sol[l]= 1;
+        }
+        l--;
+    }
+
+    return sol;
+}
+
+int main(int argc, char* argv[]){
+    // parser();
+    if (argc < 2) {
+        cerr << "Uso: " << argv[0] << " <ruta_archivo>" << endl;
+        return 1;
+    }
+    string ruta_instancia = argv[1];
+    parser_w_filename(ruta_instancia);
+
+    vector<double> result = ExactSolution(N, max_weight, value, weight);
+    
+    double total_value = 0;
+
+    for (int i = 0; i < N; i++){
+        if (result[i] == 1) {
+            total_value += value[i];
+        }
+    }
+    
+    // for (int i = 0; i < N; i++){
+    //     if (result[i] == 1) {
+    //         cout << value[i] << " " << weight[i] << endl;
+    //     }
+    // }
+
+    ofstream out("./temp_res.txt");
+    out << total_value;
+    out.close();
+
+    return 0;
+}
