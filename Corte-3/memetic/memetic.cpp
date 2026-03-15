@@ -9,12 +9,16 @@
 
 using namespace std;
 
-int probability_to_combine_parents = 60;
 int probability_to_mutate = 3;
-int population_size = 10;
-int parents_size = 6;
-int children_size = 5;
+int population_size = 15;
+int parents_size = 10;
+int children_size = 8;
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+struct solution{
+    vector<int> gen_rep;
+    double f_eval;
+};
 
 /**
  * @brief Genera una permutación aleatoria de los índices {0, ..., N-1}.
@@ -34,8 +38,6 @@ vector<int> genPermutation(int N) {
 
     // Llenar con 0,1,2,...,N-1
     iota(perm.begin(), perm.end(), 0);
-
-    mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
     // Mezclar
     shuffle(perm.begin(), perm.end(), rng);
@@ -394,6 +396,82 @@ vector<int> select_the_best(vector<vector<int>> &population){
 
 }
 
+
+auto w(vector<int> &solution)
+{
+    double w = 0;
+    for (int i = 0; i < N; i++){
+        if (solution[i] == 1){
+            w += weight[i];
+        }
+    }
+
+    return w;
+};
+
+
+solution bestNeighbor(vector<int> &x, int &N, vector<double> &value, vector<double> &weight, double &max_weight){
+    vector<int> vx;
+    vector<int> arr_ones;
+    vector<int> arr_zeros;
+    vector<int> best_solution = x;
+    double optimal = f(x);
+    double actual_f = optimal;
+    double actual_w = w(x);
+    vector<vector<int>> neighbors = {};
+    for (int i = 0; i < N; i++){
+        vx = x;
+        (vx[i] == 1) ? arr_ones.push_back(i) : arr_zeros.push_back(i);
+    }
+
+    for (int i = 0; i < arr_ones.size(); i++){
+        for (int j = 0; j < arr_zeros.size(); j++){
+            int pos_ones = arr_ones[i];
+            int pos_zeros = arr_zeros[j];
+
+            double eval = 0;
+            if(actual_w - weight[pos_ones] + weight[pos_zeros] <= max_weight){
+                eval = actual_f - value[pos_ones] + value[pos_zeros];
+            } else {
+                eval = -1;
+            }
+
+            if(eval > optimal){
+                optimal = eval;
+                best_solution = vx;
+            }                
+
+        }
+    }
+    for (int k = 0; k < vx.size(); k++){
+        int temp = vx[k];
+        double eval;
+        if (vx[k] == 1) {
+            if(actual_w - weight[k] <= max_weight){
+                eval = actual_f - value[k];
+            } else {
+                eval = -1;
+            }
+            
+        } else {
+            if(actual_w + weight[k] <= max_weight){
+                eval = actual_f + value[k];
+            } else {
+                eval = -1;
+            }
+        }
+        
+        if(eval > optimal){
+            optimal = eval;
+            best_solution = vx;
+        }  
+        vx[k] = temp;
+    }
+
+    return {best_solution, optimal};
+};
+
+
 /**
  * @brief Aplica búsqueda local sobre una solución binaria.
  *
@@ -414,84 +492,16 @@ vector<int> select_the_best(vector<vector<int>> &population){
 void local_search_light (vector<int> &x, vector<double> &weight, vector<double> &value, double &max_weight){
     int N = x.size();
 
-    /**
-     * @brief Genera el mejor vecino de una solución binaria según nuestro esquema de vecindad.
-     *
-     * Dada una solución x, explora su vecindario definido por:
-     *   1) Intercambios 1-0: reemplaza un ítem seleccionado por uno no seleccionado.
-     *   2) Flip individual: invierte cada bit de la solución.
-     *
-     * Evalúa cada vecino utilizando la función objetivo f() y mantiene
-     * el mejor encontrado. Si ningún vecino mejora la solución original,
-     * retorna la misma solución.
-     *
-     * @param x Solución binaria actual (0/1).
-     * @return Vector<int> Mejor solución vecina encontrada.
-     */
-    auto bestNeighbor = [N](vector<int> x){
-        vector<int> vx;
-        vector<int> arr_ones;
-        vector<int> arr_zeros;
-        vector<int> best_solution = x;
-        double optimal = f(x);
-        vector<vector<int>> neighbors = {};
-        for (int i = 0; i < N; i++){
-            vx = x;
-            (vx[i] == 1) ? arr_ones.push_back(i) : arr_zeros.push_back(i);
-        }
-
-        for (int i = 0; i < arr_ones.size(); i++){
-            for (int j = 0; j < arr_zeros.size(); j++){
-                int pos_ones = arr_ones[i];
-                int pos_zeros = arr_zeros[j];
-
-                vx[pos_ones] = 0;
-                vx[pos_zeros] = 1;
-
-                double eval = f(vx);
-                if(eval > optimal){
-                    optimal = eval;
-                    best_solution = vx;
-                }                
-
-                vx[pos_ones] = 1;
-                vx[pos_zeros] = 0;
-            }
-        }
-        for (int k = 0; k < vx.size(); k++){
-            int temp = vx[k];
-            if (vx[k] == 1) {
-                vx[k] = 0;
-            } else {
-                vx[k] = 1;
-            }
-            double eval = f(vx);
-            if(eval > optimal){
-                optimal = eval;
-                best_solution = vx;
-            }  
-            vx[k] = temp;
-        }
-
-        return best_solution;
-    };
-
     vector <int> var_best_neighbor;
     bool best_found = true;
-    // double optimal =  f(x);
     double prev_optimal = f(x);
-    int counter = 0;
-    while (best_found && counter < 2) {
+    while (best_found) {
         best_found = false;
-        // optimal =  f(x);
-        var_best_neighbor = bestNeighbor(x);
-        double optimal = f(var_best_neighbor);
-        //cout << "¿Te pegaste aquí? Con optimal: " << optimal << " y prev_optimal: " << prev_optimal << endl;
-        if (optimal > prev_optimal) {
-            x = var_best_neighbor;
+        solution best_solution = bestNeighbor(x, N, value, weight, max_weight);
+        if (best_solution.f_eval > prev_optimal) {
+            x = best_solution.gen_rep;
             best_found = true;
-            prev_optimal = optimal;
-            counter++;
+            prev_optimal = best_solution.f_eval;
         }
     }
 }
@@ -526,7 +536,7 @@ void greedy_fill (vector<int> &partial_solution, vector<double> &weight, vector<
 
     for (int i = 0; i < N; i++){
         int exists = indexes_used.count(i);
-        if(exists != 0){
+        if(exists == 0){
             if (weight[density_arr[i].id] + total_weight <= max_weight){
                 // cout << "¿Metes alguno?" << endl;
                 total_weight += weight[density_arr[i].id];
@@ -552,25 +562,54 @@ bool are_equal(vector<int> first_vector, vector<int> second_vector){
     return true;
 }
 
+void repair_and_fill(vector<int> &x, vector<double> &weight, vector<double> &value, double max_weight) {
+    double current_w = w(x);
+    vector<int> indices(x.size());
+    iota(indices.begin(), indices.end(), 0);
+    
+    sort(indices.begin(), indices.end(), [&](int a, int b) {
+        return (value[a] / weight[a]) < (value[b] / weight[b]);
+    });
+
+    if (current_w > max_weight) {
+        for(int idx : indices) {
+            if(x[idx] == 1) {
+                current_w -= weight[idx];
+                x[idx] = 0;
+                if(current_w <= max_weight) break;
+            }
+        }
+    }
+
+    reverse(indices.begin(), indices.end());
+    for(int idx : indices) {
+        if(x[idx] == 0 && current_w + weight[idx] <= max_weight) {
+            current_w += weight[idx];
+            x[idx] = 1;
+        }
+    }
+}
+
 void get_good(vector<vector<int>> &population, vector<double> &weight, vector<double> &value, double &max_weight){
 
     int i = 0;
     while(i < population.size()){
         vector<int> population_copy = population[i];
-        greedy_fill(population[i], weight, value, max_weight);
-        // if(are_equal(population_copy, population[i])){
-        //     cout << "Sí son iguale, cuidao ahí" << endl;
-        // }
-        // cout << "Búsqueda loca loca" << endl;
+        repair_and_fill(population[i], weight, value, max_weight);
         local_search_light(population[i], weight, value, max_weight);
         i++;
     }
 
 }
 
-int main(){
+int main(int argc, char* argv[]){
 
-    parser();
+    if (argc < 2) {
+        cerr << "Uso: " << argv[0] << " <ruta_archivo>" << endl;
+        return 1;
+    }
+    string ruta_instancia = argv[1];
+    parser_w_filename(ruta_instancia);
     // cout << "El Max Steel es este: " << max_weight << endl;
     vector<vector<int>> population = generate_population(N, population_size, weight, value, max_weight);
 
@@ -599,7 +638,7 @@ int main(){
 
     vector<int> solution = select_the_best(population);
 
-    print_solution(solution);
+    // print_solution(solution);
 
     double function_cost = f(solution);
 
@@ -608,4 +647,7 @@ int main(){
     Optfile << ULLRepresentation(solution) << "," << function_cost << "\n";
     Optfile.close();
 
+    ofstream out("../../temp_res.txt");
+    out << f(solution);
+    out.close();
 }

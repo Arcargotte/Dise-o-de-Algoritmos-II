@@ -1,0 +1,4 @@
+
+Instancia: n_1000_w_100000000_c_7_f_0-2_s_20000.txt
+   [Heuristica 1] Terminada en: 76.0884s
+   [Resultado  1] 4.65055e-310

@@ -173,5 +173,44 @@ void print_solution(vector<int> solution){
 
 }
 
+void parser_w_filename(string filename) 
+{
+    int num_items;
+
+    ifstream inputFile(filename); // Open the file named
+    string word;
+
+    if (!inputFile.is_open()) {
+        cerr << "Error: Could not open the file." << endl;
+    }
+    
+    if (inputFile >> word){
+        num_items = stoi(word);
+    }
+
+    int banned = 0;
+    int i= 0;
+    // cout << "Numero de objetos: "<< num_items << endl;
+    while (i < num_items * 3 && inputFile >> word) {
+        if (banned == 1){
+            value.push_back(stod(word));
+        } else if (banned == 2){
+            weight.push_back(stod(word));
+        }
+
+        banned = (banned + 1) % 3;
+
+        i++;
+    }
+    
+    if (inputFile >> word){
+        max_weight = stod(word);
+    }
+    
+    inputFile.close(); // Close the file stream
+
+    N = num_items;
+}
+
 
 #endif
