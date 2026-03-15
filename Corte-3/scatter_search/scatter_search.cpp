@@ -118,7 +118,8 @@ vector<vector<int>> generate_population(int N, int population_size, vector<doubl
     // vector<int> heuristic_solution = standard_greedy_algorithm(weight, value, max_weight);
     // population.push_back(heuristic_solution);
     // print_vector(heuristic_solution);
-
+    int counter = 0;
+    bool stuck = false;
     while(population.size() < population_size){
         vector<int> new_random_solution = random_solution(N);
         unsigned long long dec_rep = ULLRepresentation(new_random_solution);
@@ -127,8 +128,20 @@ vector<vector<int>> generate_population(int N, int population_size, vector<doubl
             population.push_back(new_random_solution);
             population_hash[dec_rep] = 0;
         }
+        if(counter == 2 * population_size){
+            stuck = true;
+            break;
+        }
+        counter++;
     }
 
+    if(stuck){
+        while(population.size() < population_size){
+            vector<int> new_random_solution = random_solution(N);
+            population.push_back(new_random_solution);
+        }
+    }
+    
     return population;
 }
 
@@ -194,14 +207,34 @@ vector<int> select_random(vector<vector<int>> population){
 vector<vector<int>> generate_parents(vector<vector<int>> population, int parents_size){
     
     vector<vector<int>> parents;
+    unordered_map<unsigned long long, int> population_hash;
+
+    int counter = 0;
+    bool stuck = false;
 
     while(parents.size() < parents_size){
         vector<int> new_parent = select_random(population);
-        parents.push_back(new_parent);
+        unsigned long long dec_rep = ULLRepresentation(new_parent);
+        int exists = population_hash.count(dec_rep);
+        if(exists == 0){
+            parents.push_back(new_parent);
+            population_hash[dec_rep] = 0;
+        }
+        if(counter == 2 * parents_size){
+            stuck = true;
+            break;
+        }
+        counter++;
+    }
+
+    if(stuck){
+        while(parents.size() < parents_size){
+            vector<int> new_parent = select_random(population);
+            parents.push_back(new_parent);
+        }
     }
 
     return parents;
-
 }
 
 /**
@@ -566,13 +599,11 @@ vector<unsigned long long> calculate_distances(vector<vector<int>> &population){
 
     for(vector<int> p : population){
         unsigned long long distance_acc = 0;
-        unsigned long long dec_rep_p = ULLRepresentation(p);
+        // unsigned long long dec_rep_p = ULLRepresentation(p);
 
         for(vector<int> q : population){
-            unsigned long long dec_rep_q = ULLRepresentation(q);
-            if(p != q){
-                distance_acc += distance(p, q);
-            }
+            // unsigned long long dec_rep_q = ULLRepresentation(q);
+            distance_acc += distance(p, q);
         }
 
         distances_map.push_back(distance_acc);
@@ -599,6 +630,9 @@ vector<vector<int>> diversity(vector<vector<int>> &population, vector<unsigned l
 
     int target_size = min((int)population.size(), population_size);
 
+    int counter = 0;
+    bool stuck = false;
+
     while(new_population.size() < target_size) {
         unsigned long long random_number = dist(rng);
         
@@ -613,6 +647,24 @@ vector<vector<int>> diversity(vector<vector<int>> &population, vector<unsigned l
                     selected_hashes.insert(h);
                 }
                 break;
+            }
+        }
+        if(counter == 2 * target_size){
+            stuck = true;
+            break;
+        }
+        counter++;
+    }
+
+    if(stuck){
+        while(new_population.size() < target_size) {
+            unsigned long long random_number = dist(rng);
+            
+            for(int i = 0; i < population.size(); i++) {
+                if(random_number <= population_function_cost[i]) {
+                    new_population.push_back(population[i]);
+                    break;
+                }
             }
         }
     }
@@ -702,16 +754,22 @@ int main(int argc, char* argv[]){
     }
     string ruta_instancia = argv[1];
     parser_w_filename(ruta_instancia);
+    // parser();
 
+    // cout << "Generando población..." << endl;
     vector<vector<int>> population = generate_population(N, population_size, weight, value, max_weight);
 
     int iterations = 0;
     while(iterations < 150){
 
+        // cout << "Generando padres..." << endl;
         vector<vector<int>> parents = generate_parents(population, parents_size);
         vector<vector<int>> children = recombine_parents(parents, children_size);
 
+        // cout << "Mutando..." << endl;
         mutate_children(children);
+
+        // cout << "Mejorando..." << endl;
         get_good(children, weight, value, max_weight);
 
         vector<int> the_best = select_the_best(population);
@@ -721,7 +779,10 @@ int main(int argc, char* argv[]){
             population.push_back(c);
         }
 
+        // cout << "Calculando distancias..." << endl;
         vector<unsigned long long> distances = calculate_distances(population);
+        
+        // cout << "Diversificando..." << endl;
         population = diversity(population, distances, population_size - 2);
         population.push_back(the_best);
         vector<int> best_path_link = path_linking(population);
@@ -741,7 +802,7 @@ int main(int argc, char* argv[]){
     Optfile << ULLRepresentation(solution) << "," << function_cost << "\n";
     Optfile.close();
 
-    ofstream out("../../temp_res.txt");
+    ofstream out("./temp_res.txt");
     out << f(solution);
     out.close();
 }
