@@ -99,7 +99,7 @@ void ejecutar_benchmark(string ruta_carpeta, int timeout) {
         string archivo_path = entrada.path().string();
         cout << "\nInstancia: " << entrada.path().filename().string() << endl;
 
-        for (int h = 1; h <= 3; ++h) {
+        for (int h = 0; h <= 3; ++h) {
             double resultado_heuristica;
             double tiempo = ejecutar_con_timeout(h, archivo_path, timeout, resultado_heuristica);
             

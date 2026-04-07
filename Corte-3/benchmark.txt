@@ -1,2 +1,90 @@
 
 Instancia: n_1000_w_100000000_c_7_f_0-2_s_20000.txt
+   [Solucion Exacta ] Terminada en: 9.39631s
+   [Resultado   ] 1.01058e+08
+   [Heuristica 1] Terminada en: 72.5428s
+   [Resultado  1] 1.00941e+08
+   [Heuristica 2] Terminada en: 16.7428s
+   [Resultado  2] 1.01058e+08
+   [Heuristica 3] Terminada en: 78.428s
+   [Resultado  3] 1.01058e+08
+
+Instancia: n_1000_w_100000_c_4_f_0-5_s_20000.txt
+   [Solucion Exacta ] Terminada en: 1.6042s
+   [Resultado   ] 731122
+   [Heuristica 1] Terminada en: 71.0892s
+   [Resultado  1] 729574
+   [Heuristica 2] Terminada en: 14.4098s
+   [Resultado  2] 730748
+   [Heuristica 3] Terminada en: 20.1853s
+   [Resultado  3] 730748
+
+Instancia: n_100_w_1000000_c_3_f_0-5_s_40000.txt
+   [Solucion Exacta ] Terminada en: 1.45376s
+   [Resultado   ] 1.45232e+06
+   [Heuristica 1] Terminada en: 7.39163s
+   [Resultado  1] 1.45232e+06
+   [Heuristica 2] Terminada en: 1.36362s
+   [Resultado  2] 1.45232e+06
+   [Heuristica 3] Terminada en: 2.06284s
+   [Resultado  3] 1.45232e+06
+
+Instancia: n_100_w_100000_c_4_f_0-5_s_40000.txt
+   [Solucion Exacta ] Terminada en: 0.151604s
+   [Resultado   ] 408773
+   [Heuristica 1] Terminada en: 7.16416s
+   [Resultado  1] 404909
+   [Heuristica 2] Terminada en: 1.30345s
+   [Resultado  2] 408773
+   [Heuristica 3] Terminada en: 0.752779s
+   [Resultado  3] 408773
+
+Instancia: n_100_w_10000_c_2_f_0-8_s_7000.txt
+   [Solucion Exacta ] Terminada en: 0.0515231s
+   [Resultado   ] 66251
+   [Heuristica 1] Terminada en: 7.11199s
+   [Resultado  1] 64711
+   [Heuristica 2] Terminada en: 1.3037s
+   [Resultado  2] 64711
+   [Heuristica 3] Terminada en: 0.652876s
+   [Resultado  3] 64711
+
+Instancia: n_10_w_100000000_c_2_f_0-8_s_200000.txt
+   [Solucion Exacta ] Terminada en: 5.83732s
+   [Resultado   ] 64711
+   [Heuristica 1] Terminada en: 0.921322s
+   [Resultado  1] 5.19169e+07
+   [Heuristica 2] Terminada en: 0.203116s
+   [Resultado  2] 5.19169e+07
+   [Heuristica 3] Terminada en: 0.101937s
+   [Resultado  3] 5.19169e+07
+
+Instancia: n_10_w_100000_c_4_f_0-5_s_60000.txt
+   [Solucion Exacta ] Terminada en: 0.0517153s
+   [Resultado   ] 194090
+   [Heuristica 1] Terminada en: 0.863216s
+   [Resultado  1] 194090
+   [Heuristica 2] Terminada en: 0.203162s
+   [Resultado  2] 194090
+   [Heuristica 3] Terminada en: 0.0516202s
+   [Resultado  3] 194090
+
+Instancia: n_20_w_10000_c_3_f_0-3_s_40.txt
+   [Solucion Exacta ] Terminada en: 0.0516188s
+   [Resultado   ] 8035
+   [Heuristica 1] Terminada en: 1.61899s
+   [Resultado  1] 8035
+   [Heuristica 2] Terminada en: 0.303568s
+   [Resultado  2] 8035
+   [Heuristica 3] Terminada en: 0.152061s
+   [Resultado  3] 8035
+
+Instancia: n_40_w_10000_c_10_f_0-8_s_10.txt
+   [Solucion Exacta ] Terminada en: 0.0515328s
+   [Resultado   ] 233
+   [Heuristica 1] Terminada en: 3.07244s
+   [Resultado  1] 233
+   [Heuristica 2] Terminada en: 0.552692s
+   [Resultado  2] 233
+   [Heuristica 3] Terminada en: 1.20402s
+   [Resultado  3] 233
